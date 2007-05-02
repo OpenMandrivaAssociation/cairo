@@ -4,13 +4,11 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version: 1.4.4
+Version: 1.4.6
 Release: %mkrel 1
 License:	BSD
 Group:		System/Libraries
 Source0:	http://cairographics.org/releases/%name-%version.tar.bz2
-# (fc) 1.3.14-4mdv fix bad aliasing
-Patch0:		cairo-1.3.14-fixaliasing.patch
 
 URL:		http://cairographics.org/
 BuildRequires:  freetype2-devel >= 2.1.10
@@ -102,7 +100,6 @@ Static Cairo library.
 
 %prep
 %setup -q
-%patch0 -p1 -b .fixaliasing
 
 %build
 %configure2_5x --enable-gtk-doc  --disable-glitz --enable-pdf --enable-ps --disable-xcb
