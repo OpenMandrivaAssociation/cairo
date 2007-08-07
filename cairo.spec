@@ -1,5 +1,7 @@
 %define lib_major       2
-%define lib_name        %mklibname cairo %{lib_major}
+%define libname        %mklibname cairo %{lib_major}
+%define libnamedev     %mklibname -d cairo
+%define libnamestaticdev %mklibname -s -d cairo
 
 
 Summary:	Cairo - multi-platform 2D graphics library
@@ -52,13 +54,13 @@ writing, Xc allows Cairo to target X drawables as well as generic
 image buffers. Future backends such as PostScript, PDF, and perhaps
 OpenGL are currently being planned.
 
-%package -n %{lib_name}
+%package -n %{libname}
 Summary:	Cairo - multi-platform 2D graphics library
 Group:		System/Libraries
 Provides:	cairo = %{version}-%{release}
 Requires:	freetype2 >= 2.1.10
 
-%description -n %{lib_name}
+%description -n %{libname}
 Cairo provides anti-aliased vector-based rendering for X. Paths
 consist of line segments and cubic splines and can be rendered at any
 width with various join and cap styles. All colors may be specified
@@ -78,24 +80,26 @@ writing, Xc allows Cairo to target X drawables as well as generic
 image buffers. Future backends such as PostScript, PDF, and perhaps
 OpenGL are currently being planned.
 
-%package -n %{lib_name}-devel
+%package -n %{libnamedev}
 Summary:	Development files for Cairo library
 Group:		Development/C
-Requires:	%{lib_name} = %version
+Requires:	%{libname} = %version
 Provides:	%{name}-devel = %version-%release
 Provides:	lib%{name}-devel = %version-%release
+Obsoletes:      %mklibname -d cairo 2
 Conflicts:	%{_lib}cairo1-devel
 
-%description -n %{lib_name}-devel
+%description -n %{libnamedev}
 Development files for Cairo library.
 
-%package -n %{lib_name}-static-devel
+%package -n %{libnamestaticdev}
 Summary:	Static Cairo library
 Group:		Development/C
-Requires:	%{lib_name}-devel = %version
+Requires:	%{libnamedev} = %version
 Provides:	lib%name-static-devel = %version
+Obsoletes: %mklibname -s -d cairo 2
 
-%description -n %{lib_name}-static-devel
+%description -n %{libnamestaticdev}
 Static Cairo library.
 
 
@@ -125,16 +129,16 @@ rm -rf $RPM_BUILD_ROOT
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post	-n %{lib_name} -p /sbin/ldconfig
-%postun	-n %{lib_name} -p /sbin/ldconfig
+%post	-n %{libname} -p /sbin/ldconfig
+%postun	-n %{libname} -p /sbin/ldconfig
 
 
-%files -n %{lib_name}
+%files -n %{libname}
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING NEWS README TODO
-%_libdir/lib*.so.*
+%_libdir/libcairo.so.%{lib_major}*
 
-%files -n %{lib_name}-devel
+%files -n %{libnamedev}
 %defattr(644,root,root,755)
 %_libdir/lib*.so
 %attr(644,root,root) %_libdir/lib*.la
@@ -142,7 +146,7 @@ rm -rf $RPM_BUILD_ROOT
 %_libdir/pkgconfig/*.pc
 %_datadir/gtk-doc/html/cairo/
 
-%files -n %{lib_name}-static-devel
+%files -n %{libnamestaticdev}
 %defattr(644,root,root,755)
 %_libdir/lib*.a
 
