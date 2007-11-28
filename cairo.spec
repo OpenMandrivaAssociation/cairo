@@ -6,16 +6,12 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version: 1.4.10
-Release: %mkrel 3
+Version: 1.4.12
+Release: %mkrel 1
 License:	BSD
 Group:		System/Libraries
 Source0:	http://cairographics.org/releases/%name-%version.tar.gz
 Source1:	http://cairographics.org/releases/%name-%version.tar.gz.sha1
-# (fc) 1.4.10-2mdv fix handling of invalid glyph request (fd.o bug #9846)
-Patch0:		cairo-1.4.10-ft-font-invalid-glyph.patch
-# (fc) 1.4.10-3mdv fix empty glyph handing (fd.o bug #12284)
-Patch1:		cairo-1.4.10-empty-glyph.patch
 
 URL:		http://cairographics.org/
 BuildRequires:  freetype2-devel >= 2.1.10
@@ -109,8 +105,6 @@ Static Cairo library.
 
 %prep
 %setup -q
-%patch0 -p1 -b .ft-font-invalid-glyph
-%patch1 -p1 -b .empty-glyph
 
 %build
 %configure2_5x --enable-gtk-doc  --disable-glitz --enable-pdf --enable-ps --disable-xcb
