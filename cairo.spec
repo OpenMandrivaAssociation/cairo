@@ -16,7 +16,7 @@ Source1:	http://cairographics.org/releases/%name-%version.tar.gz.sha1
 URL:		http://cairographics.org/
 BuildRequires:  freetype2-devel >= 2.1.10
 %if %mdkversion <= 200600
-BuildRequires:	XFree86-devel
+BuildRequires:	X11-devel
 BuildRequires:  XFree86-Xvfb
 %else
 BuildRequires:  libxext-devel
