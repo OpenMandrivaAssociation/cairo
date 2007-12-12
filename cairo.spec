@@ -15,16 +15,12 @@ Source1:	http://cairographics.org/releases/%name-%version.tar.gz.sha1
 
 URL:		http://cairographics.org/
 BuildRequires:  freetype2-devel >= 2.1.10
-%if %mdkversion <= 200600
-BuildRequires:	X11-devel
-BuildRequires:  XFree86-Xvfb
-%else
 BuildRequires:  libxext-devel
 BuildRequires:  libx11-devel
 BuildRequires:	libxrender-devel
 BuildRequires:	libfontconfig-devel
 BuildRequires:  x11-server-xvfb
-%endif
+BuildRequires:  pixman-devel >= 0.9.4
 
 BuildRequires:	libpng-devel
 # only needed for pdf tests
@@ -112,11 +108,7 @@ Static Cairo library.
 
 %check
 #XDISPLAY=$(i=1; while [ -f /tmp/.X$i-lock ]; do i=$(($i+1)); done; echo $i)
-%if %mdkversion <= 200600
-#%{_prefix}/X11R6/bin/Xvfb :$XDISPLAY &
-%else
 #%{_bindir}/Xvfb :$XDISPLAY &
-%endif
 #export DISPLAY=:$XDISPLAY
 #make check
 #kill $(cat /tmp/.X$XDISPLAY-lock)
@@ -124,7 +116,7 @@ Static Cairo library.
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%makeinstall
+%makeinstall_std
 
 %clean
 rm -rf $RPM_BUILD_ROOT
