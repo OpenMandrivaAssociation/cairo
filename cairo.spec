@@ -28,6 +28,7 @@ BuildRequires:	libpng-devel
 BuildRequires:  gtk-doc
 # needed by tests
 BuildRequires: fonts-ttf-bitstream-vera
+BuildRoot:	%_tmppath/%name-%version-root
 
 %description
 Cairo provides anti-aliased vector-based rendering for X. Paths
