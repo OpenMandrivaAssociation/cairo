@@ -6,7 +6,7 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version: 1.5.6
+Version: 1.5.8
 Release: %mkrel 1
 License:	BSD
 Group:		System/Libraries
@@ -127,11 +127,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n %{libname}
 %defattr(644,root,root,755)
-%doc AUTHORS COPYING NEWS README TODO
+%doc AUTHORS COPYING NEWS README
 %_libdir/libcairo.so.%{lib_major}*
 
 %files -n %{libnamedev}
 %defattr(644,root,root,755)
+%doc RELEASING BIBLIOGRAPHY BUGS ChangeLog
 %_libdir/lib*.so
 %attr(644,root,root) %_libdir/lib*.la
 %_includedir/*
