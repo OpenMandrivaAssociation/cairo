@@ -7,13 +7,15 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version: 1.5.12
-Release: %mkrel 1
+Release: %mkrel 2
 License:	BSD
 Group:		System/Libraries
 Source0:	http://cairographics.org/releases/%name-%version.tar.gz
 Source1:	http://cairographics.org/releases/%name-%version.tar.gz.sha1
 
 URL:		http://cairographics.org/
+# (fc) 1.5.12-2mdv fix type1 font wrong alignement for PS generation (GIT)
+Patch0:		cairo-1.5.12-fixtype1ps.patch
 BuildRequires:  freetype2-devel >= 2.1.10
 BuildRequires:  libxext-devel
 BuildRequires:  libx11-devel
@@ -101,6 +103,7 @@ Static Cairo library.
 
 %prep
 %setup -q
+%patch0 -p1 -b .type1fontps
 
 %build
 %configure2_5x --enable-gtk-doc  --disable-glitz --enable-pdf --enable-ps --disable-xcb
