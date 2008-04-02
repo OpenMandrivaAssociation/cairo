@@ -3,17 +3,20 @@
 %define libnamedev     %mklibname -d cairo
 %define libnamestaticdev %mklibname -s -d cairo
 
+%define pixman_version 0.10.0
+
+%define enable_test 0
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version: 1.5.14
+Version: 1.5.16
 Release: %mkrel 1
 License:	BSD
 Group:		System/Libraries
 Source0:	http://cairographics.org/releases/%name-%version.tar.gz
 Source1:	http://cairographics.org/releases/%name-%version.tar.gz.sha1
-# (fc) 1.5.14-1mdv additional PDF / PS fixes from GIT
-Patch0:		cairo-1.5.14-pdfpsfixes.patch
+# (fc) 1.5.16-1mdv various fixes from GIT
+Patch0:		cairo-1.5.16-gitfixes.patch
 
 URL:		http://cairographics.org/
 BuildRequires:  freetype2-devel >= 2.1.10
@@ -22,7 +25,7 @@ BuildRequires:  libx11-devel
 BuildRequires:	libxrender-devel
 BuildRequires:	libfontconfig-devel
 BuildRequires:  x11-server-xvfb
-BuildRequires:  pixman-devel >= 0.9.4
+BuildRequires:  pixman-devel >= %{pixman_version}
 
 BuildRequires:	libpng-devel
 # only needed for pdf tests
@@ -57,6 +60,7 @@ Summary:	Cairo - multi-platform 2D graphics library
 Group:		System/Libraries
 Provides:	cairo = %{version}-%{release}
 Requires:	freetype2 >= 2.1.10
+Requires:	%{_lib}pixman-1_0 >= %{pixman_version}
 
 %description -n %{libname}
 Cairo provides anti-aliased vector-based rendering for X. Paths
@@ -103,18 +107,20 @@ Static Cairo library.
 
 %prep
 %setup -q
-%patch0 -p1 -b .pdfpsfixes
+%patch0 -p1 -b .gitfixes
 
 %build
 %configure2_5x --enable-gtk-doc  --disable-glitz --enable-pdf --enable-ps --disable-xcb
 %make
 
 %check
-#XDISPLAY=$(i=1; while [ -f /tmp/.X$i-lock ]; do i=$(($i+1)); done; echo $i)
-#%{_bindir}/Xvfb :$XDISPLAY &
-#export DISPLAY=:$XDISPLAY
-#make check
-#kill $(cat /tmp/.X$XDISPLAY-lock)
+%if %{enable_test}
+XDISPLAY=$(i=1; while [ -f /tmp/.X$i-lock ]; do i=$(($i+1)); done; echo $i)
+%{_bindir}/Xvfb -screen 0 1600x1200x24 :$XDISPLAY &
+export DISPLAY=:$XDISPLAY
+make check
+kill $(cat /tmp/.X$XDISPLAY-lock)
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
