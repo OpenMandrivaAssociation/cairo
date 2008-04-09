@@ -9,14 +9,12 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version: 1.5.16
+Version: 1.5.20
 Release: %mkrel 1
 License:	BSD
 Group:		System/Libraries
 Source0:	http://cairographics.org/releases/%name-%version.tar.gz
 Source1:	http://cairographics.org/releases/%name-%version.tar.gz.sha1
-# (fc) 1.5.16-1mdv various fixes from GIT
-Patch0:		cairo-1.5.16-gitfixes.patch
 
 URL:		http://cairographics.org/
 BuildRequires:  freetype2-devel >= 2.1.10
@@ -107,7 +105,6 @@ Static Cairo library.
 
 %prep
 %setup -q
-%patch0 -p1 -b .gitfixes
 
 %build
 %configure2_5x --enable-gtk-doc  --disable-glitz --enable-pdf --enable-ps --disable-xcb
