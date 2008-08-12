@@ -3,14 +3,14 @@
 %define libnamedev     %mklibname -d cairo
 %define libnamestaticdev %mklibname -s -d cairo
 
-%define pixman_version 0.10.0
+%define pixman_version 0.11.2
 
 %define enable_test 0
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version: 1.6.4
-Release: %mkrel 2
+Version: 1.7.4
+Release: %mkrel 1
 License:	BSD
 Group:		System/Libraries
 Source0:	http://cairographics.org/releases/%name-%version.tar.gz
