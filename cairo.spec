@@ -9,7 +9,7 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version: 1.8.0
+Version: 1.8.2
 Release: %mkrel 1
 License:	BSD
 Group:		System/Libraries
