@@ -6,15 +6,29 @@
 %define pixman_version 0.11.2
 
 %define enable_test 0
+%define build_plf 0
+
+%{?_with_plf: %{expand: %%global build_plf 1}}
+%if %build_plf
+%define distsuffix plf
+%endif
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version: 1.8.6
-Release: %mkrel 1
+Release: %mkrel 2
 License:	BSD
 Group:		System/Libraries
 Source0:	http://cairographics.org/releases/%name-%version.tar.gz
 Source1:	http://cairographics.org/releases/%name-%version.tar.gz.sha1
+# gw patches to handle LCD subpixel hinting
+# http://bugs.freedesktop.org/show_bug.cgi?id=10301
+Patch4: cairo-04_lcd_filter.dpatch
+# http://bugs.freedesktop.org/show_bug.cgi?id=11838
+# http://bugs.freedesktop.org/show_bug.cgi?id=13335
+# https://bugs.launchpad.net/ubuntu/+source/cairo/+bug/209256
+# http://forums.fedoraforum.org/showthread.php?p=1094309#post1094309
+Patch5: cairo-respect-fontconfig.patch
 
 URL:		http://cairographics.org/
 BuildRequires:  freetype2-devel >= 2.1.10
@@ -52,6 +66,11 @@ abstract interface for rendering to multiple target types. As of this
 writing, Xc allows Cairo to target X drawables as well as generic
 image buffers. Future backends such as PostScript, PDF, and perhaps
 OpenGL are currently being planned.
+%if %{build_plf}
+
+This package is in PLF because this build has LCD subpixel hinting enabled
+which are covered by software patents.
+%endif
 
 %package -n %{libname}
 Summary:	Cairo - multi-platform 2D graphics library
@@ -79,6 +98,11 @@ abstract interface for rendering to multiple target types. As of this
 writing, Xc allows Cairo to target X drawables as well as generic
 image buffers. Future backends such as PostScript, PDF, and perhaps
 OpenGL are currently being planned.
+%if %{build_plf}
+
+This package is in PLF because this build has LCD subpixel hinting enabled
+which are covered by software patents.
+%endif
 
 %package -n %{libnamedev}
 Summary:	Development files for Cairo library
@@ -105,6 +129,11 @@ Static Cairo library.
 
 %prep
 %setup -q
+%if %build_plf
+%patch4 -p1
+%patch5 -p1
+%endif
+
 
 %build
 %configure2_5x --enable-gtk-doc  --disable-glitz --enable-pdf --enable-ps --disable-xcb
