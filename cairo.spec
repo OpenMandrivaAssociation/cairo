@@ -16,11 +16,14 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version: 1.8.6
-Release: %mkrel 2
+Release: %mkrel 3
 License:	BSD
 Group:		System/Libraries
 Source0:	http://cairographics.org/releases/%name-%version.tar.gz
 Source1:	http://cairographics.org/releases/%name-%version.tar.gz.sha1
+# fix for https://qa.mandriva.com/show_bug.cgi?id=49067
+# crash in transmission
+Patch: 		cairo-efa9e1088cbf1b5331cc0bab3348520f3b91ae4b.patch
 # gw patches to handle LCD subpixel hinting
 # http://bugs.freedesktop.org/show_bug.cgi?id=10301
 Patch4: cairo-04_lcd_filter.dpatch
@@ -129,6 +132,7 @@ Static Cairo library.
 
 %prep
 %setup -q
+%patch -p1
 %if %build_plf
 %patch4 -p1
 %patch5 -p1
