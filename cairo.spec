@@ -7,6 +7,7 @@
 
 %define enable_test 0
 %define build_plf 0
+%define build_doc 1
 
 %{?_with_plf: %{expand: %%global build_plf 1}}
 %if %build_plf
@@ -46,7 +47,9 @@ BuildRequires:  pixman-devel >= %{pixman_version}
 BuildRequires:	libpng-devel
 # only needed for pdf tests
 #BuildRequires:	libpango-devel >= 1.13.0
+%if %build_doc
 BuildRequires:  gtk-doc
+%endif
 BuildRoot:	%_tmppath/%name-%version-root
 
 %description
@@ -138,7 +141,11 @@ Static Cairo library.
 
 
 %build
-%configure2_5x --enable-gtk-doc  --disable-glitz --enable-pdf --enable-ps --disable-xcb
+%configure2_5x \
+%if %build_doc
+--enable-gtk-doc \
+%endif
+  --disable-glitz --enable-pdf --enable-ps --disable-xcb
 %make
 
 %check
