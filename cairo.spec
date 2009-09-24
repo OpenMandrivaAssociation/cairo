@@ -36,6 +36,10 @@ BuildRequires:  libxext-devel
 BuildRequires:  libx11-devel
 BuildRequires:	libxrender-devel
 BuildRequires:	libfontconfig-devel
+%if %enable_test
+# needed by tests
+BuildRequires: fonts-ttf-bitstream-vera
+%endif
 BuildRequires:  x11-server-xvfb
 BuildRequires:  pixman-devel >= %{pixman_version}
 
@@ -43,8 +47,6 @@ BuildRequires:	libpng-devel
 # only needed for pdf tests
 #BuildRequires:	libpango-devel >= 1.13.0
 BuildRequires:  gtk-doc
-# needed by tests
-BuildRequires: fonts-ttf-bitstream-vera
 BuildRoot:	%_tmppath/%name-%version-root
 
 %description
