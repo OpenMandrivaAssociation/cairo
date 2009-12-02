@@ -16,8 +16,8 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version: 1.8.8
-Release: %mkrel 2
+Version: 1.9.4
+Release: %mkrel 1
 License:	BSD
 Group:		System/Libraries
 Source0:	http://cairographics.org/releases/%name-%version.tar.gz
@@ -161,6 +161,7 @@ kill $(cat /tmp/.X$XDISPLAY-lock)
 rm -rf $RPM_BUILD_ROOT
 
 %makeinstall_std
+rm -f %buildroot%_libdir/cairo/*.a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -177,10 +178,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING NEWS README
 %_libdir/libcairo.so.%{lib_major}*
+%_libdir/libcairo-script-interpreter.so.%{lib_major}*
 
 %files -n %{libnamedev}
 %defattr(644,root,root,755)
 %doc RELEASING BIBLIOGRAPHY BUGS ChangeLog
+%_bindir/cairo-trace
+%_libdir/cairo/
 %_libdir/lib*.so
 %attr(644,root,root) %_libdir/lib*.la
 %_includedir/*
