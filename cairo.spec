@@ -5,6 +5,7 @@
 
 %define pixman_version 0.11.2
 
+#gw check coverage fails in 1.9.4
 %define enable_test 0
 %define build_plf 0
 %define build_doc 1
@@ -40,13 +41,19 @@ BuildRequires:	libfontconfig-devel
 %if %enable_test
 # needed by tests
 BuildRequires: fonts-ttf-bitstream-vera
+# only needed for pdf tests
+#BuildRequires:	libpango-devel >= 1.13.0
+# gw for svg tests
+BuildRequires:	librsvg-devel
+# gw for ps testing
+BuildRequires: libspectre-devel
+# gw for pdf testing
+BuildRequires: libpoppler-glib-devel
 %endif
 BuildRequires:  x11-server-xvfb
 BuildRequires:  pixman-devel >= %{pixman_version}
 
 BuildRequires:	libpng-devel
-# only needed for pdf tests
-#BuildRequires:	libpango-devel >= 1.13.0
 %if %build_doc
 BuildRequires:  gtk-doc
 %endif
