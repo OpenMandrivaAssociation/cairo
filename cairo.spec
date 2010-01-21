@@ -18,7 +18,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version: 1.9.4
-Release: %mkrel 1
+Release: %mkrel 2
 License:	BSD
 Group:		System/Libraries
 Source0:	http://cairographics.org/releases/%name-%version.tar.gz
@@ -31,6 +31,8 @@ Patch4: cairo-04_lcd_filter.dpatch
 # https://bugs.launchpad.net/ubuntu/+source/cairo/+bug/209256
 # http://forums.fedoraforum.org/showthread.php?p=1094309#post1094309
 Patch5: cairo-respect-fontconfig.patch
+# (fc) 1.9.4-2mdv fix stroker crash (fdo #24797) (GIT)
+Patch6: cairo-1.9.4-fixstrokercrash.patch
 
 URL:		http://cairographics.org/
 BuildRequires:  freetype2-devel >= 2.1.10
@@ -141,6 +143,7 @@ Static Cairo library.
 
 %prep
 %setup -q
+%patch6 -p1 -b .fixstrokercrash
 %if %build_plf
 %patch4 -p1
 %patch5 -p1
