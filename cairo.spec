@@ -3,7 +3,7 @@
 %define libnamedev     %mklibname -d cairo
 %define libnamestaticdev %mklibname -s -d cairo
 
-%define pixman_version 0.11.2
+%define pixman_version 0.17.6
 
 #gw check coverage fails in 1.9.4
 %define enable_test 0
@@ -17,8 +17,8 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version: 1.9.4
-Release: %mkrel 2
+Version: 1.9.6
+Release: %mkrel 1
 License:	BSD
 Group:		System/Libraries
 Source0:	http://cairographics.org/releases/%name-%version.tar.gz
@@ -31,8 +31,9 @@ Patch4: cairo-04_lcd_filter.dpatch
 # https://bugs.launchpad.net/ubuntu/+source/cairo/+bug/209256
 # http://forums.fedoraforum.org/showthread.php?p=1094309#post1094309
 Patch5: cairo-respect-fontconfig.patch
-# (fc) 1.9.4-2mdv fix stroker crash (fdo #24797) (GIT)
-Patch6: cairo-1.9.4-fixstrokercrash.patch
+# without this patch, we get a link failure when attempting to build.
+# Forwarded upstream
+Patch6:cairo-1.9.6-fix-pthread-linking.patch
 
 URL:		http://cairographics.org/
 BuildRequires:  freetype2-devel >= 2.1.10
@@ -143,19 +144,21 @@ Static Cairo library.
 
 %prep
 %setup -q
-%patch6 -p1 -b .fixstrokercrash
 %if %build_plf
 %patch4 -p1
 %patch5 -p1
 %endif
+%patch6 -p1
 
+#for patch6
+autoreconf -fi
 
 %build
 %configure2_5x \
 %if %build_doc
 --enable-gtk-doc \
 %endif
-  --disable-glitz --enable-pdf --enable-ps --disable-xcb
+  --enable-pdf --enable-ps --disable-xcb
 %make
 
 %check
