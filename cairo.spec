@@ -18,7 +18,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version: 1.9.6
-Release: %mkrel 1
+Release: %mkrel 2
 License:	BSD
 Group:		System/Libraries
 Source0:	http://cairographics.org/releases/%name-%version.tar.gz
@@ -34,6 +34,8 @@ Patch5: cairo-respect-fontconfig.patch
 # without this patch, we get a link failure when attempting to build.
 # Forwarded upstream
 Patch6:cairo-1.9.6-fix-pthread-linking.patch
+# (fc) 1.9.6-2mdv do not touch cairo error object (GNOME bug #599574) (GIT)
+Patch7:cairo-1.9.6-do-no-touch-error-object.patch
 
 URL:		http://cairographics.org/
 BuildRequires:  freetype2-devel >= 2.1.10
@@ -149,6 +151,7 @@ Static Cairo library.
 %patch5 -p1
 %endif
 %patch6 -p1
+%patch7 -p1 -b .no-error-object
 
 #for patch6
 autoreconf -fi
