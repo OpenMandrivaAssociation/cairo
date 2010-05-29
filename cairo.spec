@@ -204,7 +204,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n %{libnamedev}
 %defattr(644,root,root,755)
 %doc RELEASING BIBLIOGRAPHY BUGS ChangeLog
-%_bindir/cairo-trace
+%attr(755,root,root) %_bindir/cairo-trace
 %_libdir/cairo/
 %_libdir/lib*.so
 %attr(644,root,root) %_libdir/lib*.la
