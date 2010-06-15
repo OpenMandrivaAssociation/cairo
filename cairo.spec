@@ -7,6 +7,7 @@
 
 #gw check coverage fails in 1.9.4
 %define enable_test 0
+%define stable 0
 %define build_plf 0
 %define build_doc 1
 
@@ -22,8 +23,13 @@ Version:        1.9.6
 Release:        %mkrel 3
 License:	BSD
 Group:		System/Libraries
+%if %stable
 Source0:	http://cairographics.org/releases/%name-%version.tar.gz
 Source1:	http://cairographics.org/releases/%name-%version.tar.gz.sha1
+%else
+Source0:	http://cairographics.org/snapshots/%name-%version.tar.gz
+Source1:	http://cairographics.org/snapshots/%name-%version.tar.gz.sha1
+%endif
 # gw patches to handle LCD subpixel hinting
 # http://bugs.freedesktop.org/show_bug.cgi?id=10301
 Patch4: cairo-04_lcd_filter.dpatch
