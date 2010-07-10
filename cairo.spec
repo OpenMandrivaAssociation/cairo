@@ -19,8 +19,8 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:        1.9.6
-Release:        %mkrel 3
+Version:        1.9.8
+Release:        %mkrel 1
 License:	BSD
 Group:		System/Libraries
 %if %stable
@@ -38,14 +38,6 @@ Patch4: cairo-04_lcd_filter.dpatch
 # https://bugs.launchpad.net/ubuntu/+source/cairo/+bug/209256
 # http://forums.fedoraforum.org/showthread.php?p=1094309#post1094309
 Patch5: cairo-respect-fontconfig.patch
-# without this patch, we get a link failure when attempting to build.
-# Forwarded upstream
-Patch6:cairo-1.9.6-fix-pthread-linking.patch
-# (fc) 1.9.6-2mdv do not touch cairo error object (GNOME bug #599574) (GIT)
-Patch7:cairo-1.9.6-do-no-touch-error-object.patch
-# (nl)  1.9.6-3mdv PS: Add missing 'q' when resetting clip path
-# http://cgit.freedesktop.org/cairo/commit/?id=fa937913e06bc295750538be45aa83eb42332fb4
-Patch8: cairo-1.9.6-fix-clip-resetting.patch
 
 URL:		http://cairographics.org/
 BuildRequires:  freetype2-devel >= 2.1.10
@@ -160,14 +152,11 @@ Static Cairo library.
 %patch4 -p1
 %patch5 -p1
 %endif
-%patch6 -p1
-%patch7 -p1 -b .no-error-object
-%patch8 -p0
 
-#for patch6
-autoreconf -fi
+#autoreconf -fi
 
 %build
+export PTHREAD_LIBS=-lpthread
 %configure2_5x \
 %if %build_doc
 --enable-gtk-doc \
