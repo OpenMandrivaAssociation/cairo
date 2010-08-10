@@ -1,3 +1,11 @@
+# Cooker
+%define release %mkrel 1
+%else
+# Old distros
+%define subrel 1
+%define release %mkrel 0
+%endif
+
 %define lib_major       2
 %define libname        %mklibname cairo %{lib_major}
 %define libnamedev     %mklibname -d cairo
@@ -20,7 +28,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:        1.9.14
-Release:        %mkrel 1
+Release:        %release
 License:	BSD
 Group:		System/Libraries
 %if %stable
