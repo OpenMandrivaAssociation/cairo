@@ -54,6 +54,7 @@ BuildRequires:  libxext-devel
 BuildRequires:  libx11-devel
 BuildRequires:	libxrender-devel
 BuildRequires:	libfontconfig-devel
+BuildRequires:	glib2-devel
 %if %enable_test
 # needed by tests
 BuildRequires: fonts-ttf-bitstream-vera
@@ -190,14 +191,6 @@ rm -f %buildroot%_libdir/cairo/*.a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-%if %mdkversion < 200900
-%post	-n %{libname} -p /sbin/ldconfig
-%endif
-%if %mdkversion < 200900
-%postun	-n %{libname} -p /sbin/ldconfig
-%endif
-
 
 %files -n %{libname}
 %defattr(644,root,root,755)
