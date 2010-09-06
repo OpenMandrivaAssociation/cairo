@@ -16,7 +16,7 @@
 
 #gw check coverage fails in 1.9.4
 %define enable_test 0
-%define stable 0
+%define stable 1
 %define build_plf 0
 %define build_doc 1
 
@@ -28,7 +28,7 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:        1.9.14
+Version:        1.10.0
 Release:        %release
 License:	BSD
 Group:		System/Libraries
@@ -203,6 +203,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING NEWS README
 %_libdir/libcairo.so.%{lib_major}*
+%_libdir/libcairo-gobject.so.%{lib_major}*
 %_libdir/libcairo-script-interpreter.so.%{lib_major}*
 
 %files -n %{libnamedev}
