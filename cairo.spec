@@ -1,6 +1,6 @@
 %if %mandriva_branch == Cooker
 # Cooker
-%define release %mkrel 1
+%define release %mkrel 2
 %else
 # Old distros
 %define subrel 1
@@ -171,7 +171,7 @@ export PTHREAD_LIBS=-lpthread
 %if %build_doc
 --enable-gtk-doc \
 %endif
-  --enable-pdf --enable-ps --disable-xcb
+  --enable-pdf --enable-ps --disable-xcb --enable-tee
 %make
 
 %check
