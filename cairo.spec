@@ -1,6 +1,6 @@
 %if %mandriva_branch == Cooker
 # Cooker
-%define release %mkrel 3
+%define release %mkrel 4
 %else
 # Old distros
 %define subrel 1
@@ -106,7 +106,7 @@ Summary:	Cairo - multi-platform 2D graphics library
 Group:		System/Libraries
 Provides:	cairo = %{version}-%{release}
 Requires:	freetype2 >= 2.1.10
-Requires:	%{_lib}pixman-1_0 >= %{pixman_version}
+Requires:	%{_lib}pixman1_0 >= %{pixman_version}
 
 %description -n %{libname}
 Cairo provides anti-aliased vector-based rendering for X. Paths
