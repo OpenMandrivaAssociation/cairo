@@ -18,7 +18,7 @@
 %define enable_test 0
 %define stable 1
 %define build_plf 0
-%define build_doc 1
+%define build_doc 0
 
 %{?_with_plf: %{expand: %%global build_plf 1}}
 %if %build_plf
