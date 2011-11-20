@@ -189,6 +189,9 @@ rm -rf $RPM_BUILD_ROOT
 %makeinstall_std
 rm -f %buildroot%_libdir/cairo/*.a
 
+# remove some quite annoying /usr/usr
+perl -pi -e "s|/usr/usr/%{_lib}|%{_libdir}|g" %{buildroot}%{_libdir}/*.la
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
