@@ -1,39 +1,28 @@
-%if %mandriva_branch == Cooker
-# Cooker
-%define release %mkrel 6
-%else
-# Old distros
-%define subrel 1
-%define release %mkrel 1
-%endif
-
-%define lib_major       2
-%define libname        %mklibname cairo %{lib_major}
-%define libnamedev     %mklibname -d cairo
-%define libnamestaticdev %mklibname -s -d cairo
-
-%define pixman_version 0.17.6
+%define lib_major	2
+%define libname		%mklibname cairo %{lib_major}
+%define develname	%mklibname -d cairo
 
 #gw check coverage fails in 1.9.4
 %define enable_test 0
 %define stable 1
 %define build_plf 0
 %define build_doc 0
+%define enable_xcb 0
 
 %{?_with_plf: %{expand: %%global build_plf 1}}
 %if %build_plf
 %define distsuffix plf
 %endif
 
-
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:        1.10.2
-Release:        %release
+Version:	1.10.2
+Release:	7
 License:	BSD
 Group:		System/Libraries
-%if %stable
-Source0:	http://cairographics.org/releases/%name-%version.tar.gz
+URL:		http://cairographics.org/
+%if %{stable}
+Source0:	http://cairographics.org/releases/%{name}-%{version}.tar.gz
 Source1:	http://cairographics.org/releases/%name-%version.tar.gz.sha1
 %else
 Source0:	http://cairographics.org/snapshots/%name-%version.tar.gz
@@ -48,33 +37,23 @@ Patch4: cairo-04_lcd_filter.dpatch
 # http://forums.fedoraforum.org/showthread.php?p=1094309#post1094309
 Patch5: cairo-respect-fontconfig.patch
 
-URL:		http://cairographics.org/
-BuildRequires:  freetype2-devel >= 2.1.10
-BuildRequires:  libxext-devel
-BuildRequires:  libx11-devel
-BuildRequires:	libxrender-devel
-BuildRequires:	libfontconfig-devel
-BuildRequires:	glib2-devel
-%if %enable_test
-# needed by tests
+%if %{build_doc}
+BuildRequires: gtk-doc
+%endif
+%if %{enable_test}
 BuildRequires: fonts-ttf-bitstream-vera
-# only needed for pdf tests
-#BuildRequires:	libpango-devel >= 1.13.0
-# gw for svg tests
-BuildRequires:	librsvg-devel
-# gw for ps testing
-BuildRequires: libspectre-devel
-# gw for pdf testing
-BuildRequires: libpoppler-glib-devel
+BuildRequires: pkgconfig(poppler-glib)
+BuildRequires: pkgconfig(rsvg-2.0)
 %endif
-BuildRequires:  x11-server-xvfb
-BuildRequires:  pixman-devel >= %{pixman_version}
-
-BuildRequires:	libpng-devel
-%if %build_doc
-BuildRequires:  gtk-doc
-%endif
-BuildRoot:	%_tmppath/%name-%version-root
+BuildRequires: pkgconfig(freetype2)
+BuildRequires: pkgconfig(fontconfig)
+BuildRequires: pkgconfig(libpng)
+BuildRequires: pkgconfig(libspectre)
+BuildRequires: pkgconfig(pixman-1)
+BuildRequires: pkgconfig(x11)
+BuildRequires: pkgconfig(xext)
+BuildRequires: pkgconfig(xrender)
+BuildRequires: x11-server-xvfb
 
 %description
 Cairo provides anti-aliased vector-based rendering for X. Paths
@@ -105,8 +84,6 @@ which are covered by software patents.
 Summary:	Cairo - multi-platform 2D graphics library
 Group:		System/Libraries
 Provides:	cairo = %{version}-%{release}
-Requires:	freetype2 >= 2.1.10
-Requires:	%{_lib}pixman1_0 >= %{pixman_version}
 
 %description -n %{libname}
 Cairo provides anti-aliased vector-based rendering for X. Paths
@@ -133,49 +110,40 @@ This package is in PLF because this build has LCD subpixel hinting enabled
 which are covered by software patents.
 %endif
 
-%package -n %{libnamedev}
+%package -n %{develname}
 Summary:	Development files for Cairo library
 Group:		Development/C
-Requires:	%{libname} = %version
-Provides:	%{name}-devel = %version-%release
-Provides:	lib%{name}-devel = %version-%release
-Obsoletes:      %mklibname -d cairo 2
-Conflicts:	%{_lib}cairo1-devel
+Requires:	%{libname} = %{version}-%{release}
+Provides:	%{name}-devel = %{version}-%{release}
 
-%description -n %{libnamedev}
+%description -n %{develname}
 Development files for Cairo library.
-
-%package -n %{libnamestaticdev}
-Summary:	Static Cairo library
-Group:		Development/C
-Requires:	%{libnamedev} = %version
-Provides:	lib%name-static-devel = %version
-Obsoletes: %mklibname -s -d cairo 2
-
-%description -n %{libnamestaticdev}
-Static Cairo library.
-
 
 %prep
 %setup -q
-%if %build_plf
-%patch4 -p1
+%if %{build_plf}
+%patch4 -p1 
 %patch5 -p1
 %endif
 
-#autoreconf -fi
-
 %build
-export PTHREAD_LIBS=-lpthread
 %configure2_5x \
-%if %build_doc
---enable-gtk-doc \
+	--disable-static \
+	--disable-glitz \
+	--enable-pdf \
+	--enable-ps \
+	--enable-tee \
+%if %{build_doc}
+	--enable-gtk-doc \
 %endif
-  --enable-pdf --enable-ps --disable-xcb --enable-tee
+%if %{enable_xcb}
+	--enable-xcb 
+%endif
+
 %make
 
-%check
 %if %{enable_test}
+%check
 XDISPLAY=$(i=1; while [ -f /tmp/.X$i-lock ]; do i=$(($i+1)); done; echo $i)
 %{_bindir}/Xvfb -screen 0 1600x1200x24 :$XDISPLAY &
 export DISPLAY=:$XDISPLAY
@@ -184,37 +152,23 @@ kill $(cat /tmp/.X$XDISPLAY-lock)
 %endif
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
+rm -rf %{buildroot}
 %makeinstall_std
-rm -f %buildroot%_libdir/cairo/*.a
-
-# remove some quite annoying /usr/usr
-perl -pi -e "s|/usr/usr/%{_lib}|%{_libdir}|g" %{buildroot}%{_libdir}/*.la
-
-%clean
-rm -rf $RPM_BUILD_ROOT
+find %{buildroot} -name "*.la" -delete
 
 %files -n %{libname}
-%defattr(644,root,root,755)
-%doc AUTHORS COPYING NEWS README
-%_libdir/libcairo.so.%{lib_major}*
-%_libdir/libcairo-gobject.so.%{lib_major}*
-%_libdir/libcairo-script-interpreter.so.%{lib_major}*
+%doc COPYING
+%{_libdir}/libcairo.so.%{lib_major}*
+%{_libdir}/libcairo-gobject.so.%{lib_major}*
+%{_libdir}/libcairo-script-interpreter.so.%{lib_major}*
 
-%files -n %{libnamedev}
-%defattr(644,root,root,755)
+%files -n %{develname}
+%doc AUTHORS NEWS README
 %doc RELEASING BIBLIOGRAPHY BUGS ChangeLog
-%attr(755,root,root) %_bindir/cairo-trace
-%_libdir/cairo/
-%_libdir/lib*.so
-%attr(644,root,root) %_libdir/lib*.la
-%_includedir/*
-%_libdir/pkgconfig/*.pc
-%_datadir/gtk-doc/html/cairo/
-
-%files -n %{libnamestaticdev}
-%defattr(644,root,root,755)
-%_libdir/lib*.a
-
+%attr(755,root,root) %{_bindir}/cairo-trace
+%{_libdir}/cairo/
+%{_libdir}/lib*.so
+%{_includedir}/*
+%{_libdir}/pkgconfig/*.pc
+%{_datadir}/gtk-doc/html/cairo/
 
