@@ -44,6 +44,7 @@ BuildRequires: pkgconfig(rsvg-2.0)
 %endif
 BuildRequires: pkgconfig(freetype2)
 BuildRequires: pkgconfig(fontconfig)
+BuildRequires: pkgconfig(glib-2.0)
 BuildRequires: pkgconfig(libpng)
 BuildRequires: pkgconfig(libspectre)
 BuildRequires: pkgconfig(pixman-1)
