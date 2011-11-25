@@ -28,9 +28,6 @@ Source1:	http://cairographics.org/releases/%name-%version.tar.gz.sha1
 Source0:	http://cairographics.org/snapshots/%name-%version.tar.gz
 Source1:	http://cairographics.org/snapshots/%name-%version.tar.gz.sha1
 %endif
-# gw patches to handle LCD subpixel hinting
-# http://bugs.freedesktop.org/show_bug.cgi?id=10301
-Patch4: cairo-04_lcd_filter.dpatch
 # http://bugs.freedesktop.org/show_bug.cgi?id=11838
 # http://bugs.freedesktop.org/show_bug.cgi?id=13335
 # https://bugs.launchpad.net/ubuntu/+source/cairo/+bug/209256
@@ -122,7 +119,6 @@ Development files for Cairo library.
 %prep
 %setup -q
 %if %{build_plf}
-%patch4 -p1 
 %patch5 -p1
 %endif
 
