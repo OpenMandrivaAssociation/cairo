@@ -17,7 +17,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.10.2
-Release:	7
+Release:	8
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -81,7 +81,6 @@ which are covered by software patents.
 %package -n %{libname}
 Summary:	Cairo - multi-platform 2D graphics library
 Group:		System/Libraries
-Provides:	cairo = %{version}-%{release}
 
 %description -n %{libname}
 Cairo provides anti-aliased vector-based rendering for X. Paths
