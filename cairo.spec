@@ -1,5 +1,7 @@
-%define lib_major	2
-%define libname		%mklibname cairo %{lib_major}
+%define major		2
+%define libname		%mklibname cairo %{major}
+%define libgobject	%mklibname cairo-gobject %{major}
+%define libscript	%mklibname cairo-script-interpreter %{major}
 %define develname	%mklibname -d cairo
 
 #gw check coverage fails in 1.9.4
@@ -17,7 +19,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.10.2
-Release:	8
+Release:	9
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -107,10 +109,28 @@ This package is in PLF because this build has LCD subpixel hinting enabled
 which are covered by software patents.
 %endif
 
+%package -n %{libgobject}
+Summary:	Cairo-gobject- multi-platform 2D graphics library
+Group:		System/Libraries
+Conflicts:	%{_lib}cairo2 < 1.10.2-9
+
+%description -n %{libgobject}
+This package contains the shared library for %{name}-gobject.
+
+%package -n %{libscript}
+Summary:	Cairo-script-interpreter - multi-platform 2D graphics library
+Group:		System/Libraries
+Conflicts:	%{_lib}cairo2 < 1.10.2-9
+
+%description -n %{libscript}
+This package contains the shared library for %{name}-script-interpretergobject.
+
 %package -n %{develname}
 Summary:	Development files for Cairo library
 Group:		Development/C
 Requires:	%{libname} = %{version}-%{release}
+Requires:	%{libgobject} = %{version}-%{release}
+Requires:	%{libscript} = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 
 %description -n %{develname}
@@ -154,9 +174,13 @@ find %{buildroot} -name "*.la" -delete
 
 %files -n %{libname}
 %doc COPYING
-%{_libdir}/libcairo.so.%{lib_major}*
-%{_libdir}/libcairo-gobject.so.%{lib_major}*
-%{_libdir}/libcairo-script-interpreter.so.%{lib_major}*
+%{_libdir}/libcairo.so.%{major}*
+
+%files -n %{libgobject}
+%{_libdir}/libcairo-gobject.so.%{major}*
+
+%files -n %{libscript}
+%{_libdir}/libcairo-script-interpreter.so.%{major}*
 
 %files -n %{develname}
 %doc AUTHORS NEWS README
