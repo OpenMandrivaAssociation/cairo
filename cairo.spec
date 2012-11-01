@@ -1,15 +1,15 @@
-%define major		2
-%define libname		%mklibname cairo %{major}
-%define libgobject	%mklibname cairo-gobject %{major}
-%define libscript	%mklibname cairo-script-interpreter %{major}
-%define develname	%mklibname -d cairo
+%define major 2
+%define libname %mklibname cairo %{major}
+%define libgobject %mklibname cairo-gobject %{major}
+%define libscript %mklibname cairo-script-interpreter %{major}
+%define develname %mklibname -d cairo
 
 #gw check coverage fails in 1.9.4
 %define enable_test 0
 %define stable 1
 %define build_plf 0
 %define build_doc 0
-%define enable_xcb 0
+%define enable_xcb 1
 
 %{?_with_plf: %{expand: %%global build_plf 1}}
 %if %build_plf
@@ -18,14 +18,14 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:	1.10.2
-Release:	9
+Version:	1.12.4
+Release:	1
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
 %if %{stable}
-Source0:	http://cairographics.org/releases/%{name}-%{version}.tar.gz
-Source1:	http://cairographics.org/releases/%name-%version.tar.gz.sha1
+Source0:	http://cairographics.org/releases/%{name}-%{version}.tar.xz
+Source1:	http://cairographics.org/releases/%name-%version.tar.xz.sha1
 %else
 Source0:	http://cairographics.org/snapshots/%name-%version.tar.gz
 Source1:	http://cairographics.org/snapshots/%name-%version.tar.gz.sha1
@@ -34,26 +34,28 @@ Source1:	http://cairographics.org/snapshots/%name-%version.tar.gz.sha1
 # http://bugs.freedesktop.org/show_bug.cgi?id=13335
 # https://bugs.launchpad.net/ubuntu/+source/cairo/+bug/209256
 # http://forums.fedoraforum.org/showthread.php?p=1094309#post1094309
-Patch5: cairo-respect-fontconfig.patch
-
+Patch5:		cairo-respect-fontconfig.patch
+BuildRequires:	glibc-devel
 %if %{build_doc}
-BuildRequires: gtk-doc
+BuildRequires:	gtk-doc
 %endif
 %if %{enable_test}
-BuildRequires: fonts-ttf-bitstream-vera
-BuildRequires: pkgconfig(poppler-glib)
-BuildRequires: pkgconfig(rsvg-2.0)
+BuildRequires:	fonts-ttf-bitstream-vera
+BuildRequires:	pkgconfig(poppler-glib)
+BuildRequires:	pkgconfig(rsvg-2.0)
 %endif
-BuildRequires: pkgconfig(freetype2)
-BuildRequires: pkgconfig(fontconfig)
-BuildRequires: pkgconfig(glib-2.0)
-BuildRequires: pkgconfig(libpng)
-BuildRequires: pkgconfig(libspectre)
-BuildRequires: pkgconfig(pixman-1)
-BuildRequires: pkgconfig(x11)
-BuildRequires: pkgconfig(xext)
-BuildRequires: pkgconfig(xrender)
-BuildRequires: x11-server-xvfb
+BuildRequires:	pkgconfig(freetype2)
+BuildRequires:	pkgconfig(fontconfig)
+BuildRequires:	pkgconfig(glib-2.0)
+BuildRequires:	pkgconfig(libpng)
+BuildRequires:	pkgconfig(libspectre)
+BuildRequires:	pkgconfig(pixman-1)
+BuildRequires:	pkgconfig(x11)
+BuildRequires:	pkgconfig(xext)
+BuildRequires:	pkgconfig(xrender)
+BuildRequires:	directfb-devel
+BuildRequires:	GL-devel
+BuildRequires:	x11-server-xvfb
 
 %description
 Cairo provides anti-aliased vector-based rendering for X. Paths
@@ -143,18 +145,33 @@ Development files for Cairo library.
 %endif
 
 %build
+# (tpg) these three lines are needed for a proper find of pthread
+sed -i -e 's#test "x$cairo_cc_stderr" != "x"#false#' build/aclocal.cairo.m4
+export LIBS=-lpthread
+./autogen.sh
+
 %configure2_5x \
 	--disable-static \
-	--disable-glitz \
 	--enable-pdf \
 	--enable-ps \
 	--enable-tee \
+	--enable-directfb \
+	--enable-gl \
+	--enable-gobject \
+	--enable-xlib \
+	--enable-xlib-xrender \
+	--enable-symbol-lookup=yes \
 %if %{build_doc}
 	--enable-gtk-doc \
 %endif
 %if %{enable_xcb}
-	--enable-xcb 
+	--enable-xcb \
+	--enable-xlib-xcb \
+	--enable-xcb-shm \
 %endif
+        --enable-pthread=yes \
+        --disable-drm \
+        --disable-gallium
 
 %make
 
@@ -168,12 +185,10 @@ kill $(cat /tmp/.X$XDISPLAY-lock)
 %endif
 
 %install
-rm -rf %{buildroot}
 %makeinstall_std
 find %{buildroot} -name "*.la" -delete
 
 %files -n %{libname}
-%doc COPYING
 %{_libdir}/libcairo.so.%{major}*
 
 %files -n %{libgobject}
@@ -183,12 +198,12 @@ find %{buildroot} -name "*.la" -delete
 %{_libdir}/libcairo-script-interpreter.so.%{major}*
 
 %files -n %{develname}
-%doc AUTHORS NEWS README
+%doc AUTHORS NEWS README COPYING
 %doc RELEASING BIBLIOGRAPHY BUGS ChangeLog
 %attr(755,root,root) %{_bindir}/cairo-trace
+%attr(755,root,root) %{_bindir}/cairo-sphinx
 %{_libdir}/cairo/
 %{_libdir}/lib*.so
 %{_includedir}/*
 %{_libdir}/pkgconfig/*.pc
 %{_datadir}/gtk-doc/html/cairo/
-
