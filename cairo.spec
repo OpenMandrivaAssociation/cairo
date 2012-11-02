@@ -160,7 +160,6 @@ export LIBS=-lpthread
 	--enable-gobject \
 	--enable-xlib \
 	--enable-xlib-xrender \
-	--enable-symbol-lookup=yes \
 %if %{build_doc}
 	--enable-gtk-doc \
 %endif
