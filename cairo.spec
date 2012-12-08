@@ -1,41 +1,47 @@
-%define major 2
-%define libname %mklibname cairo %{major}
-%define libgobject %mklibname cairo-gobject %{major}
-%define libscript %mklibname cairo-script-interpreter %{major}
-%define develname %mklibname -d cairo
+%define lib_major	2
+%define libname		%mklibname cairo %{lib_major}
+%define develname	%mklibname -d cairo
 
 #gw check coverage fails in 1.9.4
 %define enable_test 0
 %define stable 1
 %define build_plf 0
 %define build_doc 0
-%define enable_xcb 1
+%define enable_xcb 0
 
 %{?_with_plf: %{expand: %%global build_plf 1}}
-%if %build_plf
+%if %{build_plf}
 %define distsuffix plf
 %endif
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.12.8
-Release:	1
+Release:	2			
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
 %if %{stable}
 Source0:	http://cairographics.org/releases/%{name}-%{version}.tar.xz
-Source1:	http://cairographics.org/releases/%name-%version.tar.xz.sha1
+Source1:	http://cairographics.org/releases/%{name}-%{version}.tar.xz.sha1
+Source2:	http://cairographics.org/releases/%{name}-%{version}.tar.xz.sha1.asc
 %else
-Source0:	http://cairographics.org/snapshots/%name-%version.tar.gz
-Source1:	http://cairographics.org/snapshots/%name-%version.tar.gz.sha1
+Source0:	http://cairographics.org/snapshots/%{name}-%{version}.tar.gz
+Source1:	http://cairographics.org/snapshots/%{name}-%{version}.tar.gz.sha1
 %endif
 # http://bugs.freedesktop.org/show_bug.cgi?id=11838
 # http://bugs.freedesktop.org/show_bug.cgi?id=13335
 # https://bugs.launchpad.net/ubuntu/+source/cairo/+bug/209256
 # http://forums.fedoraforum.org/showthread.php?p=1094309#post1094309
-Patch5:		cairo-respect-fontconfig.patch
-BuildRequires:	glibc-devel
+Patch0:		cairo-respect-fontconfig.patch
+
+# https://bugs.freedesktop.org/show_bug.cgi?id=30910
+Patch1:		cairo-1.12.2-rosa-buildfix.patch
+
+# From Fedora, fix possible crashes:
+Patch2:		cairo-1.12.8-0-sized-glyph-xlib.patch
+Patch3:		cairo-1.12.8-0-sized-glyph-xcb.patch
+
 %if %{build_doc}
 BuildRequires:	gtk-doc
 %endif
@@ -53,8 +59,6 @@ BuildRequires:	pkgconfig(pixman-1)
 BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xrender)
-BuildRequires:	directfb-devel
-BuildRequires:	GL-devel
 BuildRequires:	x11-server-xvfb
 
 %description
@@ -76,10 +80,10 @@ abstract interface for rendering to multiple target types. As of this
 writing, Xc allows Cairo to target X drawables as well as generic
 image buffers. Future backends such as PostScript, PDF, and perhaps
 OpenGL are currently being planned.
-%if %{build_plf}
 
-This package is in PLF because this build has LCD subpixel hinting enabled
-which are covered by software patents.
+%if %{build_plf}
+This package is in restricted repository because this build has LCD subpixel
+hinting enabled which are covered by software patents.
 %endif
 
 %package -n %{libname}
@@ -105,34 +109,16 @@ abstract interface for rendering to multiple target types. As of this
 writing, Xc allows Cairo to target X drawables as well as generic
 image buffers. Future backends such as PostScript, PDF, and perhaps
 OpenGL are currently being planned.
+
 %if %{build_plf}
-
-This package is in PLF because this build has LCD subpixel hinting enabled
-which are covered by software patents.
+This package is in restricted repository because this build has LCD subpixel
+hinting enabled which are covered by software patents.
 %endif
-
-%package -n %{libgobject}
-Summary:	Cairo-gobject- multi-platform 2D graphics library
-Group:		System/Libraries
-Conflicts:	%{_lib}cairo2 < 1.10.2-9
-
-%description -n %{libgobject}
-This package contains the shared library for %{name}-gobject.
-
-%package -n %{libscript}
-Summary:	Cairo-script-interpreter - multi-platform 2D graphics library
-Group:		System/Libraries
-Conflicts:	%{_lib}cairo2 < 1.10.2-9
-
-%description -n %{libscript}
-This package contains the shared library for %{name}-script-interpretergobject.
 
 %package -n %{develname}
 Summary:	Development files for Cairo library
 Group:		Development/C
 Requires:	%{libname} = %{version}-%{release}
-Requires:	%{libgobject} = %{version}-%{release}
-Requires:	%{libscript} = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 
 %description -n %{develname}
@@ -141,36 +127,25 @@ Development files for Cairo library.
 %prep
 %setup -q
 %if %{build_plf}
-%patch5 -p1
+%patch0 -p1
 %endif
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 %build
-# (tpg) these three lines are needed for a proper find of pthread
-sed -i -e 's#test "x$cairo_cc_stderr" != "x"#false#' build/aclocal.cairo.m4
-export LIBS=-lpthread
-./autogen.sh
-
 %configure2_5x \
 	--disable-static \
+	--disable-glitz \
 	--enable-pdf \
 	--enable-ps \
 	--enable-tee \
-	--enable-directfb \
-	--enable-gl \
-	--enable-gobject \
-	--enable-xlib \
-	--enable-xlib-xrender \
 %if %{build_doc}
 	--enable-gtk-doc \
 %endif
 %if %{enable_xcb}
-	--enable-xcb \
-	--enable-xlib-xcb \
-	--enable-xcb-shm \
+	--enable-xcb
 %endif
-        --enable-pthread=yes \
-        --disable-drm \
-        --disable-gallium
 
 %make
 
@@ -184,20 +159,17 @@ kill $(cat /tmp/.X$XDISPLAY-lock)
 %endif
 
 %install
+rm -rf %{buildroot}
 %makeinstall_std
-find %{buildroot} -name "*.la" -delete
 
 %files -n %{libname}
-%{_libdir}/libcairo.so.%{major}*
-
-%files -n %{libgobject}
-%{_libdir}/libcairo-gobject.so.%{major}*
-
-%files -n %{libscript}
-%{_libdir}/libcairo-script-interpreter.so.%{major}*
+%doc COPYING
+%{_libdir}/libcairo.so.%{lib_major}*
+%{_libdir}/libcairo-gobject.so.%{lib_major}*
+%{_libdir}/libcairo-script-interpreter.so.%{lib_major}*
 
 %files -n %{develname}
-%doc AUTHORS NEWS README COPYING
+%doc AUTHORS NEWS README
 %doc RELEASING BIBLIOGRAPHY BUGS ChangeLog
 %attr(755,root,root) %{_bindir}/cairo-trace
 %attr(755,root,root) %{_bindir}/cairo-sphinx
