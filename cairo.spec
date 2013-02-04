@@ -64,7 +64,7 @@ BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xrender)
 BuildRequires:	x11-server-xvfb
-BuildRequires:	binutils-devel
+#BuildRequires:	binutils-devel
 
 %description
 Cairo provides anti-aliased vector-based rendering for X. Paths
@@ -158,10 +158,8 @@ Development files for Cairo library.
 
 %build
 autoreconf -fi
-%configure2_5x CC="gcc -fuse-ld=bfd" \
+%configure2_5x \
 	--disable-static \
-	--enable-symbol-lookup \
-	--enable-pthread \
 	--enable-ft \
 	--enable-fc \
 	--enable-png \
