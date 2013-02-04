@@ -158,7 +158,7 @@ Development files for Cairo library.
 
 %build
 autoreconf -fi
-%configure2_5x \
+%configure2_5x CC="gcc -fuse-ld=bfd" \
 	--disable-static \
 	--enable-symbol-lookup \
 	--enable-pthread \
