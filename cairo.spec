@@ -18,8 +18,8 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:	1.12.10
-Release:	2
+Version:	1.12.12
+Release:	1
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -64,6 +64,7 @@ BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xrender)
 BuildRequires:	x11-server-xvfb
+BuildRequires:	binutils-devel
 
 %description
 Cairo provides anti-aliased vector-based rendering for X. Paths
@@ -159,11 +160,17 @@ Development files for Cairo library.
 autoreconf -fi
 %configure2_5x \
 	--disable-static \
+	--enable-symbol-lookup \
+	--enable-pthread \
+	--enable-ft \
+	--enable-fc \
+	--enable-png \
 	--enable-pdf \
 	--enable-ps \
 	--enable-tee \
 	--enable-directfb \
 	--enable-gl \
+	--enable-glx \
 	--enable-gobject \
 	--enable-xlib \
 	--enable-xlib-xrender \
