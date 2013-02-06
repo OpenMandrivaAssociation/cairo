@@ -19,7 +19,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.12.12
-Release:	1
+Release:	2
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -57,6 +57,7 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(gl)
 BuildRequires:	pkgconfig(glib-2.0)
+BuildRequires:	pkgconfig(gtk+-2.0)
 BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(libspectre)
 BuildRequires:	pkgconfig(pixman-1)
@@ -94,6 +95,8 @@ hinting enabled which are covered by software patents.
 %package -n %{libname}
 Summary:	Cairo - multi-platform 2D graphics library
 Group:		System/Libraries
+Requires:	%{libscript} = %{EVRD}
+Requires:	freetype2 >= 2.1.10
 
 %description -n %{libname}
 Cairo provides anti-aliased vector-based rendering for X. Paths
@@ -203,7 +206,6 @@ kill $(cat /tmp/.X$XDISPLAY-lock)
 %makeinstall_std
 
 %files -n %{libname}
-%doc COPYING
 %{_libdir}/libcairo.so.%{major}*
 
 %files -n %{libgobject}
@@ -213,7 +215,7 @@ kill $(cat /tmp/.X$XDISPLAY-lock)
 %{_libdir}/libcairo-script-interpreter.so.%{major}*
 
 %files -n %{devname}
-%doc AUTHORS NEWS README
+%doc AUTHORS NEWS README COPYING
 %doc RELEASING BIBLIOGRAPHY BUGS ChangeLog
 %{_bindir}/cairo-trace
 %{_bindir}/cairo-sphinx
