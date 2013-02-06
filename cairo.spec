@@ -95,7 +95,7 @@ hinting enabled which are covered by software patents.
 %package -n %{libname}
 Summary:	Cairo - multi-platform 2D graphics library
 Group:		System/Libraries
-Requires:	%{libscript} = %{EVRD}
+#Requires:	%{libscript} = %{EVRD}
 Requires:	freetype2 >= 2.1.10
 
 %description -n %{libname}
