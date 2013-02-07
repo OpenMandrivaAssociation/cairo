@@ -1,0 +1,11 @@
+--- cairo-1.12.12/configure.ac	2013-02-07 20:55:58.685827135 +0000
++++ cairo-1.12.12/configure.ac.tpg	2013-01-29 13:54:51.000000000 +0000
+@@ -778,7 +778,7 @@
+ 	fi
+ ])
+ 
+-AC_CHECK_LIB(bfd, bfd_openr, LIBS="$LIBS -lz"
++AC_CHECK_LIB(bfd, bfd_openr,
+ 	 [AC_CHECK_HEADER(bfd.h, [have_bfd=yes],
+ 	 [have_bfd=no])], [have_bfd=no])
+ AC_CHECK_HEADER(libiberty.h,, [have_bfd=no])
