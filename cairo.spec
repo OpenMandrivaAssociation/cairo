@@ -97,7 +97,6 @@ hinting enabled which are covered by software patents.
 Summary:	Cairo - multi-platform 2D graphics library
 Group:		System/Libraries
 Requires:	%{libscript} = %{EVRD}
-Requires:	freetype >= 2.4.0
 
 %description -n %{libname}
 Cairo provides anti-aliased vector-based rendering for X. Paths
