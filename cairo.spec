@@ -40,7 +40,6 @@ Patch1:		cairo-1.12.2-rosa-buildfix.patch
 # From Fedora, fix possible crashes:
 Patch2:		cairo-1.12.8-0-sized-glyph-xlib.patch
 Patch3:		cairo-1.12.8-0-sized-glyph-xcb.patch
-#Patch4:		cairo-1.12.12-enable-bfd.patch
 
 %if %{build_doc}
 BuildRequires:	gtk-doc
@@ -155,7 +154,6 @@ Development files for Cairo library.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 
 %build
 #global ldflags %{ldflags} -fuse-ld=bfd
