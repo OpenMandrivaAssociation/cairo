@@ -18,18 +18,15 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:	1.12.12
-Release:	3
+Version:	1.12.14
+Release:	1
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
 %if %{stable}
 Source0:	http://cairographics.org/releases/%{name}-%{version}.tar.xz
-Source1:	http://cairographics.org/releases/%{name}-%{version}.tar.xz.sha1
-Source2:	http://cairographics.org/releases/%{name}-%{version}.tar.xz.sha1.asc
 %else
 Source0:	http://cairographics.org/snapshots/%{name}-%{version}.tar.gz
-Source1:	http://cairographics.org/snapshots/%{name}-%{version}.tar.gz.sha1
 %endif
 # http://bugs.freedesktop.org/show_bug.cgi?id=11838
 # http://bugs.freedesktop.org/show_bug.cgi?id=13335
