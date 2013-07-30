@@ -19,7 +19,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.12.14
-Release:	3
+Release:	4
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -53,6 +53,9 @@ BuildRequires:	pkgconfig(directfb)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(gl)
+%ifarch %arm aarch64
+BuildRequires:	pkgconfig(egl)
+%endif
 BuildRequires:	pkgconfig(glib-2.0)
 BuildRequires:	pkgconfig(gtk+-2.0)
 BuildRequires:	pkgconfig(libpng)
