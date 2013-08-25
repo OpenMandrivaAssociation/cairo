@@ -5,11 +5,12 @@
 %define devname	%mklibname -d cairo
 
 #gw check coverage fails in 1.9.4
-%define enable_test 0
+%bcond_with	test
 %define stable 1
 %define build_plf 0
-%define build_doc 0
-%define enable_xcb 1
+%bcond_with	doc
+%bcond_without	xcb
+%bcond_without	egl
 
 %{?_with_plf: %{expand: %%global build_plf 1}}
 %if %{build_plf}
@@ -19,7 +20,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.12.14
-Release:	4
+Release:	5
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -41,10 +42,10 @@ Patch1:		cairo-1.12.2-rosa-buildfix.patch
 Patch2:		cairo-1.12.8-0-sized-glyph-xlib.patch
 Patch3:		cairo-1.12.8-0-sized-glyph-xcb.patch
 
-%if %{build_doc}
+%if %{with doc}
 BuildRequires:	gtk-doc
 %endif
-%if %{enable_test}
+%if %{with test}
 BuildRequires:	fonts-ttf-bitstream-vera
 BuildRequires:	pkgconfig(poppler-glib)
 BuildRequires:	pkgconfig(rsvg-2.0)
@@ -53,7 +54,7 @@ BuildRequires:	pkgconfig(directfb)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(gl)
-%ifarch %arm aarch64
+%if %{with egl}
 BuildRequires:	pkgconfig(egl)
 %endif
 BuildRequires:	pkgconfig(glib-2.0)
@@ -177,10 +178,10 @@ autoreconf -fi
 	--enable-gobject \
 	--enable-xlib \
 	--enable-xlib-xrender \
-%if %{build_doc}
+%if %{with doc}
 	--enable-gtk-doc \
 %endif
-%if %{enable_xcb}
+%if %{with xcb}
 	--enable-xcb \
 	--enable-xlib-xcb \
 	--enable-xcb-shm \
@@ -195,7 +196,7 @@ sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
 %make
 
-%if %{enable_test}
+%if %{with test}
 %check
 XDISPLAY=$(i=1; while [ -f /tmp/.X$i-lock ]; do i=$(($i+1)); done; echo $i)
 %{_bindir}/Xvfb -screen 0 1600x1200x24 :$XDISPLAY &
