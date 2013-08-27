@@ -10,7 +10,11 @@
 %define build_plf 0
 %bcond_with	doc
 %bcond_without	xcb
+%ifarch %{ix86} x86_64
+%bcond_with	egl
+%else
 %bcond_without	egl
+%endif
 
 %{?_with_plf: %{expand: %%global build_plf 1}}
 %if %{build_plf}
@@ -20,7 +24,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.12.16
-Release:	1
+Release:	2
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
