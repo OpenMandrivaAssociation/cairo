@@ -191,9 +191,9 @@ autoreconf -fi
 	--enable-xcb-shm \
 %endif
 %if %{with egl}
-	--enable-egl
+	--enable-egl \
 %else
-	--disable-egl
+	--disable-egl \
 %endif
 	--enable-pthread=yes
         #--disable-drm \
