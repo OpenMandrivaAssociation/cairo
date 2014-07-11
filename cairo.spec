@@ -24,7 +24,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.12.16
-Release:	11
+Release:	12
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
