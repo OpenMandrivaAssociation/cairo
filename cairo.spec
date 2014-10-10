@@ -24,7 +24,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.12.16
-Release:	12
+Release:	13
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -54,7 +54,6 @@ BuildRequires:	fonts-ttf-bitstream-vera
 BuildRequires:	pkgconfig(poppler-glib)
 BuildRequires:	pkgconfig(rsvg-2.0)
 %endif
-BuildRequires:	pkgconfig(directfb)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(gl)
@@ -163,20 +162,18 @@ Development files for Cairo library.
 %patch2 -p1
 %patch3 -p1
 
-%build
-#global ldflags %{ldflags} -fuse-ld=bfd
-
 autoreconf -fi
-%configure2_5x \
+
+%build
+%configure \
 	--disable-static \
-    --disable-symbol-lookup \
+	--disable-symbol-lookup \
 	--enable-ft \
 	--enable-fc \
 	--enable-png \
 	--enable-pdf \
 	--enable-ps \
 	--enable-tee \
-	--enable-directfb \
 	--enable-gl \
 	--enable-glx \
 	--enable-gobject \
@@ -196,8 +193,6 @@ autoreconf -fi
 	--disable-egl \
 %endif
 	--enable-pthread=yes
-        #--disable-drm \
-        #--disable-gallium
 
 # (tpg) nuke rpath
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
