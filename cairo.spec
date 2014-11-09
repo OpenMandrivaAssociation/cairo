@@ -183,7 +183,7 @@ autoreconf -fi
 	--enable-gobject \
 	--enable-xlib \
 	--enable-xlib-xrender \
-	--enable-drm=yes \
+	--enable-drm=no \
 	--enable-gallium=yes \
 	--enable-qt=yes \
 %if %{with doc}
