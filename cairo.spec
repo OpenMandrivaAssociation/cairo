@@ -184,7 +184,7 @@ autoreconf -fi
 	--enable-xlib \
 	--enable-xlib-xrender \
 	--enable-drm=no \
-	--enable-gallium=yes \
+	--enable-gallium=no \
 	--enable-qt=yes \
 %if %{with doc}
 	--enable-gtk-doc \
