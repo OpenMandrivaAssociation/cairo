@@ -69,6 +69,8 @@ BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xrender)
 BuildRequires:	x11-server-xvfb
+BuildRequires:	lzo-devel
+BuildRequires:	qt4-devel
 #BuildRequires:	binutils-devel
 
 %description
