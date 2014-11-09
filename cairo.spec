@@ -23,8 +23,8 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:	1.12.16
-Release:	13
+Version:	1.12.18
+Release:	1
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -168,6 +168,7 @@ autoreconf -fi
 %configure \
 	--disable-static \
 	--disable-symbol-lookup \
+	--enable-directfb=no \
 	--enable-ft \
 	--enable-fc \
 	--enable-png \
@@ -179,6 +180,9 @@ autoreconf -fi
 	--enable-gobject \
 	--enable-xlib \
 	--enable-xlib-xrender \
+	--enable-drm=yes \
+	--enable-gallium=yes \
+	--enable-qt=yes \
 %if %{with doc}
 	--enable-gtk-doc \
 %endif
@@ -231,4 +235,3 @@ kill $(cat /tmp/.X$XDISPLAY-lock)
 %{_includedir}/*
 %{_libdir}/pkgconfig/*.pc
 %{_datadir}/gtk-doc/html/cairo/
-
