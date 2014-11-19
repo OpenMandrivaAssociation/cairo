@@ -10,6 +10,7 @@
 %define build_plf 0
 %bcond_with	doc
 %bcond_without	xcb
+%bcond_with	qt4
 %ifarch %{ix86} x86_64
 %bcond_with	egl
 %else
@@ -23,7 +24,7 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:	1.12.18
+Version:	1.14.0
 Release:	1
 License:	BSD
 Group:		System/Libraries
@@ -70,7 +71,9 @@ BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xrender)
 BuildRequires:	x11-server-xvfb
 BuildRequires:	lzo-devel
+%if %{with qt4}
 BuildRequires:	qt4-devel
+%endif
 BuildRequires:	pkgconfig(libudev)
 #BuildRequires:	binutils-devel
 
@@ -185,7 +188,11 @@ autoreconf -fi
 	--enable-xlib-xrender \
 	--enable-drm=no \
 	--enable-gallium=no \
-	--enable-qt=yes \
+%if %{with qt4}
+	--enable-qt=auto \
+%else
+	--enable-qt=no \
+%endif
 %if %{with doc}
 	--enable-gtk-doc \
 %endif
