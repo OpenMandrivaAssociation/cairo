@@ -186,8 +186,8 @@ autoreconf -fi
 	--enable-gobject \
 	--enable-xlib \
 	--enable-xlib-xrender \
-	--enable-drm=yes \
-	--enable-gallium=yes \
+	--enable-drm=no \
+	--enable-gallium=no \
 %if %{with qt4}
 	--enable-qt=auto \
 %else
