@@ -1,8 +1,8 @@
-%define major	2
-%define libname	%mklibname cairo %{major}
+%define major 2
+%define libname %mklibname cairo %{major}
 %define libgobject %mklibname cairo-gobject %{major}
 %define libscript %mklibname cairo-script-interpreter %{major}
-%define devname	%mklibname -d cairo
+%define devname %mklibname -d cairo
 
 #gw check coverage fails in 1.9.4
 %bcond_with	test
@@ -25,7 +25,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.14.0
-Release:	1
+Release:	2
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -186,8 +186,8 @@ autoreconf -fi
 	--enable-gobject \
 	--enable-xlib \
 	--enable-xlib-xrender \
-	--enable-drm=no \
-	--enable-gallium=no \
+	--enable-drm=yes \
+	--enable-gallium=yes \
 %if %{with qt4}
 	--enable-qt=auto \
 %else
