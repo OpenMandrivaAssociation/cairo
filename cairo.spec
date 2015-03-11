@@ -43,10 +43,6 @@ Patch0:		cairo-respect-fontconfig.patch
 # https://bugs.freedesktop.org/show_bug.cgi?id=30910
 Patch1:		cairo-1.12.2-rosa-buildfix.patch
 
-# From Fedora, fix possible crashes:
-Patch2:		cairo-1.12.8-0-sized-glyph-xlib.patch
-Patch3:		cairo-1.12.8-0-sized-glyph-xcb.patch
-
 %if %{with doc}
 BuildRequires:	gtk-doc
 %endif
