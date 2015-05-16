@@ -1,4 +1,5 @@
 removed_sources:
   cairo-1.12.14.tar.xz: 9106ab09b2e7b9f90521b18dd4a7e9577eba6c15
-sources:
   cairo-1.12.16.tar.xz: 4f6e337d5d3edd7ea79d1426f575331552b003ec
+sources:
+  cairo-1.12.18.tar.xz: a76940b58da9c83b8934264617135326c0918f9d
