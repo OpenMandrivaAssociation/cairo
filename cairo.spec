@@ -23,8 +23,8 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:	1.12.16
-Release:	9
+Version:	1.12.18
+Release:	0.1
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -187,7 +187,6 @@ autoreconf -fi
 %endif
 %if %{with xcb}
 	--enable-xcb \
-	--enable-xlib-xcb \
 	--enable-xcb-shm \
 %endif
 %if %{with egl}
