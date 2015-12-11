@@ -12,7 +12,7 @@
 %bcond_without	xcb
 %bcond_with	qt4
 %ifarch %{ix86} x86_64
-%bcond_with	egl
+%bcond_without	egl
 %else
 %bcond_without	egl
 %endif
@@ -182,8 +182,8 @@ autoreconf -fi
 	--enable-gobject \
 	--enable-xlib \
 	--enable-xlib-xrender \
-	--enable-drm=no \
-	--enable-gallium=no \
+	--enable-drm=yes \
+	--enable-gallium=yes \
 %if %{with qt4}
 	--enable-qt=auto \
 %else
