@@ -49,7 +49,8 @@ BuildRequires:	pkgconfig(rsvg-2.0)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(gl)
-BuildRequires:	pkgconfig(glesv2)
+# (tpg) use GL or GLESv2, can not have both
+#BuildRequires:	pkgconfig(glesv2)
 BuildRequires:	pkgconfig(egl)
 BuildRequires:	pkgconfig(glib-2.0)
 BuildRequires:	pkgconfig(gtk+-2.0)
@@ -172,7 +173,6 @@ autoreconf -fi
 	--enable-tee \
 	--enable-gl \
 	--enable-glx \
-	--enable-glesv2 \
 	--enable-gobject \
 	--enable-xlib \
 	--enable-xlib-xrender \
@@ -220,8 +220,7 @@ kill $(cat /tmp/.X$XDISPLAY-lock)
 %{_libdir}/libcairo-script-interpreter.so.%{major}*
 
 %files -n %{devname}
-%doc AUTHORS NEWS README COPYING
-%doc RELEASING BIBLIOGRAPHY BUGS ChangeLog
+%doc AUTHORS NEWS README
 %{_bindir}/cairo-trace
 %{_bindir}/cairo-sphinx
 %{_libdir}/cairo/
