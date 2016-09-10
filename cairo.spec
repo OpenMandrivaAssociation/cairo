@@ -9,13 +9,7 @@
 %define stable 1
 %define build_plf 0
 %bcond_with	doc
-%bcond_without	xcb
 %bcond_with	qt4
-%ifarch %{ix86} x86_64
-%bcond_without	egl
-%else
-%bcond_without	egl
-%endif
 
 %{?_with_plf: %{expand: %%global build_plf 1}}
 %if %{build_plf}
@@ -25,7 +19,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.14.6
-Release:	3
+Release:	6
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -42,7 +36,8 @@ Patch0:		cairo-respect-fontconfig.patch
 
 # https://bugs.freedesktop.org/show_bug.cgi?id=30910
 Patch1:		cairo-1.12.2-rosa-buildfix.patch
-
+# (tpg) from upstream
+Patch2:         0001-xlib-Fix-double-free-in-_get_image_surface.patch
 %if %{with doc}
 BuildRequires:	gtk-doc
 %endif
@@ -54,9 +49,9 @@ BuildRequires:	pkgconfig(rsvg-2.0)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(gl)
-%if %{with egl}
+# (tpg) use GL or GLESv2, can not have both
+#BuildRequires:	pkgconfig(glesv2)
 BuildRequires:	pkgconfig(egl)
-%endif
 BuildRequires:	pkgconfig(glib-2.0)
 BuildRequires:	pkgconfig(gtk+-2.0)
 BuildRequires:	pkgconfig(libpng)
@@ -162,7 +157,6 @@ Development files for Cairo library.
 %endif
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 
 autoreconf -fi
 
@@ -170,7 +164,7 @@ autoreconf -fi
 %configure \
 	--disable-static \
 	--disable-symbol-lookup \
-	--enable-directfb=no \
+	--disable-directfb \
 	--enable-ft \
 	--enable-fc \
 	--enable-png \
@@ -179,6 +173,7 @@ autoreconf -fi
 	--enable-tee \
 	--enable-gl \
 	--enable-glx \
+	--disable-glesv2 \
 	--enable-gobject \
 	--enable-xlib \
 	--enable-xlib-xrender \
@@ -192,15 +187,10 @@ autoreconf -fi
 %if %{with doc}
 	--enable-gtk-doc \
 %endif
-%if %{with xcb}
 	--enable-xcb \
 	--enable-xcb-shm \
-%endif
-%if %{with egl}
+	--disable-xlib-xcb \
 	--enable-egl \
-%else
-	--disable-egl \
-%endif
 	--enable-pthread=yes
 
 # (tpg) nuke rpath
@@ -231,8 +221,7 @@ kill $(cat /tmp/.X$XDISPLAY-lock)
 %{_libdir}/libcairo-script-interpreter.so.%{major}*
 
 %files -n %{devname}
-%doc AUTHORS NEWS README COPYING
-%doc RELEASING BIBLIOGRAPHY BUGS ChangeLog
+%doc AUTHORS NEWS README
 %{_bindir}/cairo-trace
 %{_bindir}/cairo-sphinx
 %{_libdir}/cairo/
