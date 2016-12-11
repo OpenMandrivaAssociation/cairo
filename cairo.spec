@@ -5,11 +5,11 @@
 %define devname %mklibname -d cairo
 
 #gw check coverage fails in 1.9.4
-%bcond_with	test
+%bcond_with test
 %define stable 1
 %define build_plf 0
-%bcond_with	doc
-%bcond_with	qt4
+%bcond_with doc
+%bcond_with qt4
 
 %{?_with_plf: %{expand: %%global build_plf 1}}
 %if %{build_plf}
@@ -18,8 +18,8 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:	1.14.6
-Release:	6
+Version:	1.14.8
+Release:	1
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
