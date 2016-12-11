@@ -36,8 +36,6 @@ Patch0:		cairo-respect-fontconfig.patch
 
 # https://bugs.freedesktop.org/show_bug.cgi?id=30910
 Patch1:		cairo-1.12.2-rosa-buildfix.patch
-# (tpg) from upstream
-Patch2:         0001-xlib-Fix-double-free-in-_get_image_surface.patch
 %if %{with doc}
 BuildRequires:	gtk-doc
 %endif
@@ -156,7 +154,6 @@ Development files for Cairo library.
 %patch0 -p1
 %endif
 %patch1 -p1
-%patch2 -p1
 
 autoreconf -fi
 
