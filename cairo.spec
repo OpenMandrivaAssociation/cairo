@@ -10,6 +10,7 @@
 %define build_plf 0
 %bcond_with doc
 %bcond_with qt4
+%bcond_with gtk
 
 %{?_with_plf: %{expand: %%global build_plf 1}}
 %if %{build_plf}
@@ -51,7 +52,9 @@ BuildRequires:	pkgconfig(gl)
 #BuildRequires:	pkgconfig(glesv2)
 BuildRequires:	pkgconfig(egl)
 BuildRequires:	pkgconfig(glib-2.0)
+%if %{with gtk}
 BuildRequires:	pkgconfig(gtk+-2.0)
+%endif
 BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(libspectre)
 BuildRequires:	pkgconfig(pixman-1)
