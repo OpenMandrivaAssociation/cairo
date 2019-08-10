@@ -37,6 +37,18 @@ Patch0:		cairo-respect-fontconfig.patch
 
 # https://bugs.freedesktop.org/show_bug.cgi?id=30910
 Patch1:		cairo-1.12.2-rosa-buildfix.patch
+
+Patch3:         cairo-multilib.patch
+
+# https://gitlab.freedesktop.org/cairo/cairo/merge_requests/1
+Patch4:         0001-Set-default-LCD-filter-to-FreeType-s-default.patch
+
+# https://gitlab.freedesktop.org/cairo/cairo/merge_requests/5
+Patch5:         0001-ft-Use-FT_Done_MM_Var-instead-of-free-when-available.patch
+
+# https://github.com/matthiasclasen/cairo/commit/79ad01724161502e8d9d2bd384ff1f0174e5df6e
+Patch6:         cairo-composite_color_glyphs.patch
+
 %if %{with doc}
 BuildRequires:	gtk-doc
 %endif
@@ -157,10 +169,20 @@ Development files for Cairo library.
 %patch0 -p1
 %endif
 %patch1 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
 
 autoreconf -fi
 
 %build
+%ifarch %{x86_64}
+export ax_cv_c_float_words_bigendian=yes
+%else
+export ax_cv_c_float_words_bigendian=no
+%endif
+
 %configure \
 	--disable-static \
 	--disable-symbol-lookup \
