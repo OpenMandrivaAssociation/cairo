@@ -180,7 +180,7 @@ autoreconf -fi
 #ifarch %{x86_64}
 #export ax_cv_c_float_words_bigendian=yes
 #else
-#export ax_cv_c_float_words_bigendian=no
+export ax_cv_c_float_words_bigendian=no
 #endif
 
 %configure \
