@@ -20,7 +20,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.16.0
-Release:	1
+Release:	2
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -177,11 +177,12 @@ Development files for Cairo library.
 autoreconf -fi
 
 %build
-%ifarch %{x86_64}
-export ax_cv_c_float_words_bigendian=yes
-%else
+#ifarch %{x86_64}
+#export ax_cv_c_float_words_bigendian=yes
+#else
+# Value "YES", causing graphics and other issues on GTK apps. For now force value "NO". (angry)
 export ax_cv_c_float_words_bigendian=no
-%endif
+#endif
 
 %configure \
 	--disable-static \
