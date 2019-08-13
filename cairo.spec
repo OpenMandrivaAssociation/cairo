@@ -20,7 +20,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.16.0
-Release:	4
+Release:	5
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -38,7 +38,7 @@ Patch0:		cairo-respect-fontconfig.patch
 # https://bugs.freedesktop.org/show_bug.cgi?id=30910
 Patch1:		cairo-1.12.2-rosa-buildfix.patch
 
-Patch3:         cairo-multilib.patch
+#Patch3:         cairo-multilib.patch
 
 # https://gitlab.freedesktop.org/cairo/cairo/merge_requests/1
 #Patch4:         0001-Set-default-LCD-filter-to-FreeType-s-default.patch
@@ -169,7 +169,7 @@ Development files for Cairo library.
 %patch0 -p1
 %endif
 %patch1 -p1
-%patch3 -p1
+#patch3 -p1
 #patch4 -p1
 #patch5 -p1
 #patch6 -p1
