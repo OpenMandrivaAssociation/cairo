@@ -20,7 +20,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.16.0
-Release:	5
+Release:	6
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -177,11 +177,11 @@ Development files for Cairo library.
 autoreconf -fi
 
 %build
-%ifarch %{x86_64}
-export ax_cv_c_float_words_bigendian=yes
-%else
-export ax_cv_c_float_words_bigendian=no
-%endif
+#ifarch %{x86_64}
+#export ax_cv_c_float_words_bigendian=yes
+#else
+#export ax_cv_c_float_words_bigendian=no
+#endif
 
 %configure \
 	--disable-static \
