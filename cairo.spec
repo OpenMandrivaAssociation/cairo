@@ -20,7 +20,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.16.0
-Release:	3
+Release:	4
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -41,7 +41,7 @@ Patch1:		cairo-1.12.2-rosa-buildfix.patch
 Patch3:         cairo-multilib.patch
 
 # https://gitlab.freedesktop.org/cairo/cairo/merge_requests/1
-Patch4:         0001-Set-default-LCD-filter-to-FreeType-s-default.patch
+#Patch4:         0001-Set-default-LCD-filter-to-FreeType-s-default.patch
 
 # https://gitlab.freedesktop.org/cairo/cairo/merge_requests/5
 #Patch5:         0001-ft-Use-FT_Done_MM_Var-instead-of-free-when-available.patch
@@ -170,7 +170,7 @@ Development files for Cairo library.
 %endif
 %patch1 -p1
 %patch3 -p1
-%patch4 -p1
+#patch4 -p1
 #patch5 -p1
 #patch6 -p1
 
