@@ -1,8 +1,19 @@
+# cairo is used by wine
+%ifarch %{x86_64}
+%bcond_without compat32
+%else
+%bcond_with compat32
+%endif
+
 %define major 2
 %define libname %mklibname cairo %{major}
 %define libgobject %mklibname cairo-gobject %{major}
 %define libscript %mklibname cairo-script-interpreter %{major}
 %define devname %mklibname -d cairo
+%define lib32name %mklib32name cairo %{major}
+%define lib32gobject %mklib32name cairo-gobject %{major}
+%define lib32script %mklib32name cairo-script-interpreter %{major}
+%define dev32name %mklib32name -d cairo
 
 #gw check coverage fails in 1.9.4
 %bcond_with test
@@ -20,7 +31,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.16.0
-Release:	3
+Release:	4
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -80,6 +91,27 @@ BuildRequires:	qt4-devel
 %endif
 BuildRequires:	pkgconfig(libudev)
 #BuildRequires:	binutils-devel
+%if %{with compat32}
+BuildRequires:	devel(libudev)
+BuildRequires:	devel(liblzo2)
+BuildRequires:	devel(libXrender)
+BuildRequires:	devel(libXext)
+BuildRequires:	devel(libX11)
+BuildRequires:	devel(libpixman-1)
+BuildRequires:	devel(libfreetype)
+BUildRequires:	devel(libfontconfig)
+BuildRequires:	devel(libglib-2.0)
+BuildRequires:	devel(libmount)
+BuildRequires:	devel(libpcre)
+BuildRequires:	devel(libblkid)
+BuildRequires:	devel(libpng16)
+BuildRequires:	devel(libxcb)
+BuildRequires:	devel(libXau)
+BuildRequires:	devel(libXdmcp)
+BuildRequires:	devel(libz)
+BuildRequires:	devel(libbz2)
+BuildRequires:	devel(libpng16)
+%endif
 
 %description
 Cairo provides anti-aliased vector-based rendering for X. Paths
@@ -163,6 +195,63 @@ Provides:	%{name}-devel = %{version}-%{release}
 %description -n %{devname}
 Development files for Cairo library.
 
+%if %{with compat32}
+%package -n %{lib32name}
+Summary:	Cairo - multi-platform 2D graphics library (32-bit)
+Group:		System/Libraries
+Requires:	%{lib32script} = %{EVRD}
+
+%description -n %{lib32name}
+Cairo provides anti-aliased vector-based rendering for X. Paths
+consist of line segments and cubic splines and can be rendered at any
+width with various join and cap styles. All colors may be specified
+with optional translucence (opacity/alpha) and combined using the
+extended Porter/Duff compositing algebra as found in the X Render
+Extension.
+
+Cairo exports a stateful rendering API similar in spirit to the path
+construction, text, and painting operators of PostScript, (with the
+significant addition of translucence in the imaging model). When
+complete, the API is intended to support the complete imaging model of
+PDF 1.4.
+
+Cairo relies on the Xc library for backend rendering. Xc provides an
+abstract interface for rendering to multiple target types. As of this
+writing, Xc allows Cairo to target X drawables as well as generic
+image buffers. Future backends such as PostScript, PDF, and perhaps
+OpenGL are currently being planned.
+
+%if %{build_plf}
+This package is in restricted repository because this build has LCD subpixel
+hinting enabled which are covered by software patents.
+%endif
+
+%package -n	%{lib32gobject}
+Summary:	Cairo-gobject- multi-platform 2D graphics library (32-bit)
+Group:		System/Libraries
+
+%description -n	%{lib32gobject}
+This package contains the shared library for %{name}-gobject.
+
+%package -n	%{lib32script}
+Summary:	Cairo-script-interpreter - multi-platform 2D graphics library (32-bit)
+Group:		System/Libraries
+
+%description -n %{lib32script}
+This package contains the shared library for %{name}-script-interpretergobject.
+
+%package -n %{dev32name}
+Summary:	Development files for Cairo library
+Group:		Development/C
+Requires:	%{devname} = %{version}-%{release}
+Requires:	%{lib32name} = %{version}-%{release}
+Requires:	%{lib32gobject} = %{version}-%{release}
+Requires:	%{lib32script} = %{version}-%{release}
+
+%description -n %{dev32name}
+Development files for Cairo library.
+%endif
+
 %prep
 %setup -q
 %if %{build_plf}
@@ -176,7 +265,20 @@ Development files for Cairo library.
 
 autoreconf -fi
 
-%build
+export CONFIGURE_TOP="$(pwd)"
+
+%if %{with compat32}
+mkdir build32
+cd build32
+%configure32 \
+	--disable-ps \
+	--disable-pdf
+# (tpg) nuke rpath
+sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+cd ..
+%endif
+
 #ifarch %{x86_64}
 #export ax_cv_c_float_words_bigendian=yes
 #else
@@ -184,6 +286,8 @@ autoreconf -fi
 export ax_cv_c_float_words_bigendian=no
 #endif
 
+mkdir buildnative
+cd buildnative
 %configure \
 	--disable-static \
 	--disable-symbol-lookup \
@@ -220,19 +324,28 @@ export ax_cv_c_float_words_bigendian=no
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
-%make
+
+%build
+%if %{with compat32}
+%make_build -C build32
+%endif
+%make_build -C buildnative
+
 
 %if %{with test}
 %check
 XDISPLAY=$(i=1; while [ -f /tmp/.X$i-lock ]; do i=$(($i+1)); done; echo $i)
 %{_bindir}/Xvfb -screen 0 1600x1200x24 :$XDISPLAY &
 export DISPLAY=:$XDISPLAY
-make check
+make -C buildnative check
 kill $(cat /tmp/.X$XDISPLAY-lock)
 %endif
 
 %install
-%makeinstall_std
+%if %{with compat32}
+%make_install -C build32
+%endif
+%make_install -C buildnative
 
 %files -n %{libname}
 %{_libdir}/libcairo.so.%{major}*
@@ -252,3 +365,19 @@ kill $(cat /tmp/.X$XDISPLAY-lock)
 %{_includedir}/*
 %{_libdir}/pkgconfig/*.pc
 %{_datadir}/gtk-doc/html/cairo/
+
+%if %{with compat32}
+%files -n %{lib32name}
+%{_prefix}/lib/libcairo.so.%{major}*
+
+%files -n %{lib32gobject}
+%{_prefix}/lib/libcairo-gobject.so.%{major}*
+
+%files -n %{lib32script}
+%{_prefix}/lib/libcairo-script-interpreter.so.%{major}*
+
+%files -n %{dev32name}
+%{_prefix}/lib/cairo/
+%{_prefix}/lib/lib*.so
+%{_prefix}/lib/pkgconfig/*.pc
+%endif
