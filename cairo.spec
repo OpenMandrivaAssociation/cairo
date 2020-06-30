@@ -31,7 +31,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.16.0
-Release:	4
+Release:	5
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -111,6 +111,8 @@ BuildRequires:	devel(libXdmcp)
 BuildRequires:	devel(libz)
 BuildRequires:	devel(libbz2)
 BuildRequires:	devel(libpng16)
+BuildRequires:	devel(libspectre)
+BuildRequires:	devel(libpoppler-glib)
 %endif
 
 %description
@@ -271,8 +273,8 @@ export CONFIGURE_TOP="$(pwd)"
 mkdir build32
 cd build32
 %configure32 \
-	--disable-ps \
-	--disable-pdf
+	--enable-ps \
+	--enable-pdf
 # (tpg) nuke rpath
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
