@@ -19,7 +19,7 @@
 %bcond_with test
 %define stable 1
 %define build_plf 0
-%bcond_with doc
+%bcond_without doc
 %bcond_with qt4
 %bcond_with gtk
 
@@ -31,7 +31,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.16.0
-Release:	6
+Release:	7
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
