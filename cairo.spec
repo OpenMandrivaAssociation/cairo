@@ -17,48 +17,26 @@
 
 #gw check coverage fails in 1.9.4
 %bcond_with test
-%define stable 1
-%define build_plf 0
-%bcond_without doc
-%bcond_with qt4
+%bcond_with doc
 %bcond_with gtk
-
-%{?_with_plf: %{expand: %%global build_plf 1}}
-%if %{build_plf}
-%define distsuffix plf
-%endif
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:	1.16.0
-Release:	7
+Version:	1.17.4
+Release:	1
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
-%if %{stable}
 Source0:	http://cairographics.org/releases/%{name}-%{version}.tar.xz
-%else
-Source0:	https://www.cairographics.org/snapshots/cairo-%{version}.tar.xz
-%endif
-# http://bugs.freedesktop.org/show_bug.cgi?id=11838
-# http://bugs.freedesktop.org/show_bug.cgi?id=13335
-# https://bugs.launchpad.net/ubuntu/+source/cairo/+bug/209256
-# http://forums.fedoraforum.org/showthread.php?p=1094309#post1094309
-Patch0:		cairo-respect-fontconfig.patch
 
-# https://bugs.freedesktop.org/show_bug.cgi?id=30910
-Patch1:		cairo-1.12.2-rosa-buildfix.patch
-
-Patch3:         cairo-multilib.patch
+Patch0:		cairo-multilib.patch
 
 # https://gitlab.freedesktop.org/cairo/cairo/merge_requests/1
-Patch4:         0001-Set-default-LCD-filter-to-FreeType-s-default.patch
+Patch1:		0001-Set-default-LCD-filter-to-FreeType-s-default.patch
 
-# https://gitlab.freedesktop.org/cairo/cairo/merge_requests/5
-Patch5:         0001-ft-Use-FT_Done_MM_Var-instead-of-free-when-available.patch
-
-# https://github.com/matthiasclasen/cairo/commit/79ad01724161502e8d9d2bd384ff1f0174e5df6e
-Patch6:         cairo-composite_color_glyphs.patch
+# Fix generating PDF font names
+# https://gitlab.freedesktop.org/cairo/cairo/-/merge_requests/125
+Patch2:		125.patch
 
 %if %{with doc}
 BuildRequires:	gtk-doc
@@ -70,10 +48,6 @@ BuildRequires:	pkgconfig(rsvg-2.0)
 %endif
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(fontconfig)
-BuildRequires:	pkgconfig(gl)
-# (tpg) use GL or GLESv2, can not have both
-#BuildRequires:	pkgconfig(glesv2)
-BuildRequires:	pkgconfig(egl)
 BuildRequires:	pkgconfig(glib-2.0)
 %if %{with gtk}
 BuildRequires:	pkgconfig(gtk+-2.0)
@@ -85,12 +59,7 @@ BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xrender)
 BuildRequires:	x11-server-xvfb
-BuildRequires:	lzo-devel
-%if %{with qt4}
-BuildRequires:	qt4-devel
-%endif
 BuildRequires:	pkgconfig(libudev)
-#BuildRequires:	binutils-devel
 %if %{with compat32}
 BuildRequires:	devel(libudev)
 BuildRequires:	devel(liblzo2)
@@ -135,11 +104,6 @@ writing, Xc allows Cairo to target X drawables as well as generic
 image buffers. Future backends such as PostScript, PDF, and perhaps
 OpenGL are currently being planned.
 
-%if %{build_plf}
-This package is in restricted repository because this build has LCD subpixel
-hinting enabled which are covered by software patents.
-%endif
-
 %package -n %{libname}
 Summary:	Cairo - multi-platform 2D graphics library
 Group:		System/Libraries
@@ -165,20 +129,15 @@ writing, Xc allows Cairo to target X drawables as well as generic
 image buffers. Future backends such as PostScript, PDF, and perhaps
 OpenGL are currently being planned.
 
-%if %{build_plf}
-This package is in restricted repository because this build has LCD subpixel
-hinting enabled which are covered by software patents.
-%endif
-
-%package -n	%{libgobject}
+%package -n %{libgobject}
 Summary:	Cairo-gobject- multi-platform 2D graphics library
 Group:		System/Libraries
 Conflicts:	%{_lib}cairo2 < 1.12.8-3
 
-%description -n	%{libgobject}
+%description -n %{libgobject}
 This package contains the shared library for %{name}-gobject.
 
-%package -n	%{libscript}
+%package -n %{libscript}
 Summary:	Cairo-script-interpreter - multi-platform 2D graphics library
 Group:		System/Libraries
 Conflicts:	%{_lib}cairo2 < 1.12.8-3
@@ -223,19 +182,14 @@ writing, Xc allows Cairo to target X drawables as well as generic
 image buffers. Future backends such as PostScript, PDF, and perhaps
 OpenGL are currently being planned.
 
-%if %{build_plf}
-This package is in restricted repository because this build has LCD subpixel
-hinting enabled which are covered by software patents.
-%endif
-
-%package -n	%{lib32gobject}
+%package -n %{lib32gobject}
 Summary:	Cairo-gobject- multi-platform 2D graphics library (32-bit)
 Group:		System/Libraries
 
-%description -n	%{lib32gobject}
+%description -n %{lib32gobject}
 This package contains the shared library for %{name}-gobject.
 
-%package -n	%{lib32script}
+%package -n %{lib32script}
 Summary:	Cairo-script-interpreter - multi-platform 2D graphics library (32-bit)
 Group:		System/Libraries
 
@@ -255,19 +209,12 @@ Development files for Cairo library.
 %endif
 
 %prep
-%setup -q
-%if %{build_plf}
-%patch0 -p1
-%endif
-%patch1 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-
-autoreconf -fi
+%autosetup -p1
 
 export CONFIGURE_TOP="$(pwd)"
+
+# Value "YES", causing graphics and other issues on GTK apps. For now force value "NO". (angry)
+export ax_cv_c_float_words_bigendian=no
 
 %if %{with compat32}
 mkdir build32
@@ -281,45 +228,20 @@ sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 cd ..
 %endif
 
-#ifarch %{x86_64}
-#export ax_cv_c_float_words_bigendian=yes
-#else
-# Value "YES", causing graphics and other issues on GTK apps. For now force value "NO". (angry)
-export ax_cv_c_float_words_bigendian=no
-#endif
-
 mkdir buildnative
 cd buildnative
 %configure \
-	--disable-static \
-	--disable-symbol-lookup \
-	--disable-directfb \
-	--enable-ft \
-	--enable-fc \
-	--enable-png \
-	--enable-pdf \
-	--enable-ps \
-	--enable-tee \
-	--enable-gl \
-	--enable-glx \
-	--disable-glesv2 \
-	--enable-gobject \
 	--enable-xlib \
-	--enable-xlib-xrender \
-	--enable-drm=no \
-	--enable-gallium=no \
-%if %{with qt4}
-	--enable-qt=auto \
-%else
-	--enable-qt=no \
-%endif
+	--enable-ft \
+	--enable-ps \
+	--enable-pdf \
+	--enable-svg \
+	--enable-tee \
+	--enable-gobject \
+	--disable-gl \
 %if %{with doc}
 	--enable-gtk-doc \
 %endif
-	--enable-xcb \
-	--enable-xcb-shm \
-	--disable-xlib-xcb \
-	--enable-egl \
 	--enable-pthread=yes
 
 # (tpg) nuke rpath
