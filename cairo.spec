@@ -283,7 +283,6 @@ kill $(cat /tmp/.X$XDISPLAY-lock)
 %files -n %{devname}
 %doc AUTHORS NEWS README
 %{_bindir}/cairo-trace
-%{_bindir}/cairo-sphinx
 %{_libdir}/cairo/
 %{_libdir}/lib*.so
 %{_includedir}/*
