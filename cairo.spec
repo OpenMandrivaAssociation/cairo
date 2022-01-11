@@ -23,7 +23,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.17.4
-Release:	2
+Release:	4
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -60,6 +60,8 @@ BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xrender)
 BuildRequires:	x11-server-xvfb
 BuildRequires:	pkgconfig(libudev)
+BuildRequires:	pkgconfig(glesv2)
+BuildRequires:	pkgconfig(egl)
 %if %{with compat32}
 BuildRequires:	devel(libudev)
 BuildRequires:	devel(liblzo2)
@@ -238,7 +240,9 @@ cd buildnative
 	--enable-svg \
 	--enable-tee \
 	--enable-gobject \
-	--disable-gl \
+	--enable-gl=no \
+	--enable-glesv3=yes \
+	--enable-egl=yes \
 %if %{with doc}
 	--enable-gtk-doc \
 %endif
@@ -248,13 +252,11 @@ cd buildnative
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
-
 %build
 %if %{with compat32}
 %make_build -C build32
 %endif
 %make_build -C buildnative
-
 
 %if %{with test}
 %check
@@ -287,7 +289,7 @@ kill $(cat /tmp/.X$XDISPLAY-lock)
 %{_libdir}/lib*.so
 %{_includedir}/*
 %{_libdir}/pkgconfig/*.pc
-%{_datadir}/gtk-doc/html/cairo/
+%doc %{_datadir}/gtk-doc/html/cairo/
 
 %if %{with compat32}
 %files -n %{lib32name}
