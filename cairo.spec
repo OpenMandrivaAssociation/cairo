@@ -15,50 +15,36 @@
 %define lib32script %mklib32name cairo-script-interpreter %{major}
 %define dev32name %mklib32name -d cairo
 
-#gw check coverage fails in 1.9.4
-%bcond_with test
 %bcond_with doc
-%bcond_with gtk
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:	1.17.4
-Release:	4
+Version:	1.17.6
+Release:	1
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
 Source0:	http://cairographics.org/releases/%{name}-%{version}.tar.xz
-
 Patch0:		cairo-multilib.patch
 
 # https://gitlab.freedesktop.org/cairo/cairo/merge_requests/1
 Patch1:		0001-Set-default-LCD-filter-to-FreeType-s-default.patch
 
-# Fix generating PDF font names
-# https://gitlab.freedesktop.org/cairo/cairo/-/merge_requests/125
-Patch2:		125.patch
+# https://gitlab.freedesktop.org/cairo/cairo/-/issues/547
+Patch2:		cairo-1.17.6-meson-fixes.patch
 
+BuildRequires:	meson
 %if %{with doc}
 BuildRequires:	gtk-doc
-%endif
-%if %{with test}
-BuildRequires:	fonts-ttf-bitstream-vera
-BuildRequires:	pkgconfig(poppler-glib)
-BuildRequires:	pkgconfig(rsvg-2.0)
 %endif
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(glib-2.0)
-%if %{with gtk}
-BuildRequires:	pkgconfig(gtk+-2.0)
-%endif
 BuildRequires:	pkgconfig(libpng)
-BuildRequires:	pkgconfig(libspectre)
 BuildRequires:	pkgconfig(pixman-1)
 BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xrender)
-BuildRequires:	x11-server-xvfb
 BuildRequires:	pkgconfig(libudev)
 BuildRequires:	pkgconfig(glesv2)
 BuildRequires:	pkgconfig(egl)
@@ -81,9 +67,8 @@ BuildRequires:	devel(libXau)
 BuildRequires:	devel(libXdmcp)
 BuildRequires:	devel(libz)
 BuildRequires:	devel(libbz2)
-BuildRequires:	devel(libpng16)
-BuildRequires:	devel(libspectre)
 BuildRequires:	devel(libpoppler-glib)
+BuildRequires:	devel(libgs)
 %endif
 
 %description
@@ -213,65 +198,42 @@ Development files for Cairo library.
 %prep
 %autosetup -p1
 
-export CONFIGURE_TOP="$(pwd)"
-
-# Value "YES", causing graphics and other issues on GTK apps. For now force value "NO". (angry)
-export ax_cv_c_float_words_bigendian=no
-
 %if %{with compat32}
-mkdir build32
-cd build32
-%configure32 \
-	--enable-ps \
-	--enable-pdf
-# (tpg) nuke rpath
-sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
-sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
-cd ..
+%meson32 \
+	-Dzlib=enabled \
+	-Dsymbol-lookup=disabled \
+	-Dspectre=disabled \
+	-Dgtk_doc=false \
+	-Dtests=disabled \
+	-Dxml=disabled
+
+%ninja_build -C build32
 %endif
 
-mkdir buildnative
-cd buildnative
-%configure \
-	--enable-xlib \
-	--enable-ft \
-	--enable-ps \
-	--enable-pdf \
-	--enable-svg \
-	--enable-tee \
-	--enable-gobject \
-	--enable-gl=no \
-	--enable-glesv3=yes \
-	--enable-egl=yes \
+%meson \
+	-Dfreetype=enabled \
+	-Dfontconfig=enabled \
+	-Dglib=enabled \
 %if %{with doc}
-	--enable-gtk-doc \
+	-Dgtk_doc=true \
 %endif
-	--enable-pthread=yes
+	-Dspectre=disabled \
+	-Dsymbol-lookup=disabled \
+	-Dtee=enabled \
+	-Dtests=disabled \
+	-Dxcb=enabled \
+	-Dxlib=enabled \
+	-Dxml=disabled
 
-# (tpg) nuke rpath
-sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
-sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+%meson_build
+
 
 %build
 %if %{with compat32}
-%make_build -C build32
-%endif
-%make_build -C buildnative
-
-%if %{with test}
-%check
-XDISPLAY=$(i=1; while [ -f /tmp/.X$i-lock ]; do i=$(($i+1)); done; echo $i)
-%{_bindir}/Xvfb -screen 0 1600x1200x24 :$XDISPLAY &
-export DISPLAY=:$XDISPLAY
-make -C buildnative check
-kill $(cat /tmp/.X$XDISPLAY-lock)
+%ninja_install -C build32
 %endif
 
-%install
-%if %{with compat32}
-%make_install -C build32
-%endif
-%make_install -C buildnative
+%meson_install
 
 %files -n %{libname}
 %{_libdir}/libcairo.so.%{major}*
@@ -285,11 +247,14 @@ kill $(cat /tmp/.X$XDISPLAY-lock)
 %files -n %{devname}
 %doc AUTHORS NEWS README
 %{_bindir}/cairo-trace
+%{_bindir}/cairo-sphinx
 %{_libdir}/cairo/
 %{_libdir}/lib*.so
 %{_includedir}/*
 %{_libdir}/pkgconfig/*.pc
+%if %{with doc}
 %doc %{_datadir}/gtk-doc/html/cairo/
+%endif
 
 %if %{with compat32}
 %files -n %{lib32name}
