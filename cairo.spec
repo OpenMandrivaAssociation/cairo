@@ -49,6 +49,10 @@ BuildRequires:	pkgconfig(libudev)
 BuildRequires:	pkgconfig(lzo2)
 BuildRequires:	pkgconfig(glesv2)
 BuildRequires:	pkgconfig(egl)
+BuildRequires:  pkgconfig(gl)
+BuildRequires:  pkgconfig(xcb)
+BuildRequires:  pkgconfig(xcb-render)
+BuildRequires:  pkgconfig(xcb-shm)
 %if %{with compat32}
 BuildRequires:	devel(libudev)
 BuildRequires:	devel(liblzo2)
@@ -216,6 +220,7 @@ Development files for Cairo library.
 	-Dfreetype=enabled \
 	-Dfontconfig=enabled \
 	-Dglib=enabled \
+	-Dgl-backend=enabled \
 %if %{with doc}
 	-Dgtk_doc=true \
 %endif
