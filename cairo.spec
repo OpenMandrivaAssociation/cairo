@@ -20,7 +20,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.17.6
-Release:	1
+Release:	2
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -46,8 +46,13 @@ BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xrender)
 BuildRequires:	pkgconfig(libudev)
+BuildRequires:	pkgconfig(lzo2)
 BuildRequires:	pkgconfig(glesv2)
 BuildRequires:	pkgconfig(egl)
+BuildRequires:  pkgconfig(gl)
+BuildRequires:  pkgconfig(xcb)
+BuildRequires:  pkgconfig(xcb-render)
+BuildRequires:  pkgconfig(xcb-shm)
 %if %{with compat32}
 BuildRequires:	devel(libudev)
 BuildRequires:	devel(liblzo2)
@@ -69,6 +74,7 @@ BuildRequires:	devel(libz)
 BuildRequires:	devel(libbz2)
 BuildRequires:	devel(libpoppler-glib)
 BuildRequires:	devel(libgs)
+BuildRequires:	devel(liblzo2)
 %endif
 
 %description
@@ -214,6 +220,7 @@ Development files for Cairo library.
 	-Dfreetype=enabled \
 	-Dfontconfig=enabled \
 	-Dglib=enabled \
+	-Dgl-backend=gl \
 %if %{with doc}
 	-Dgtk_doc=true \
 %endif
