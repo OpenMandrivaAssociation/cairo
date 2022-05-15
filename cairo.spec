@@ -220,7 +220,7 @@ Development files for Cairo library.
 	-Dfreetype=enabled \
 	-Dfontconfig=enabled \
 	-Dglib=enabled \
-	-Dgl-backend=enabled \
+	-Dgl-backend=gl \
 %if %{with doc}
 	-Dgtk_doc=true \
 %endif
