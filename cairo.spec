@@ -20,7 +20,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.17.6
-Release:	3
+Release:	4
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -32,6 +32,8 @@ Patch1:		0001-Set-default-LCD-filter-to-FreeType-s-default.patch
 
 # https://gitlab.freedesktop.org/cairo/cairo/-/issues/547
 Patch2:		cairo-1.17.6-meson-fixes.patch
+
+Patch3:		cairo-1.17.6-sane-font-defaults.patch
 
 BuildRequires:	meson
 %if %{with doc}

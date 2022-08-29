@@ -1,0 +1,57 @@
+diff -up cairo-1.17.6/src/cairo-font-options.c.omv~ cairo-1.17.6/src/cairo-font-options.c
+diff -up cairo-1.17.6/src/cairo-ft-font.c.omv~ cairo-1.17.6/src/cairo-ft-font.c
+--- cairo-1.17.6/src/cairo-ft-font.c.omv~	2022-08-29 22:56:53.586074368 +0200
++++ cairo-1.17.6/src/cairo-ft-font.c	2022-08-29 23:06:31.762720799 +0200
+@@ -3459,7 +3459,7 @@ _cairo_ft_font_options_substitute (const
+ {
+     FcValue v;
+ 
+-    if (options->antialias != CAIRO_ANTIALIAS_DEFAULT)
++    if (1 /*options->antialias != CAIRO_ANTIALIAS_DEFAULT*/)
+     {
+ 	if (FcPatternGet (pattern, FC_ANTIALIAS, 0, &v) == FcResultNoMatch)
+ 	{
+@@ -3468,7 +3468,7 @@ _cairo_ft_font_options_substitute (const
+ 				    options->antialias != CAIRO_ANTIALIAS_NONE))
+ 		return _cairo_error (CAIRO_STATUS_NO_MEMORY);
+ 
+-	    if (options->antialias != CAIRO_ANTIALIAS_SUBPIXEL) {
++	    if (options->antialias != CAIRO_ANTIALIAS_SUBPIXEL && options->antialias != CAIRO_ANTIALIAS_DEFAULT) {
+ 		FcPatternDel (pattern, FC_RGBA);
+ 		if (! FcPatternAddInteger (pattern, FC_RGBA, FC_RGBA_NONE))
+ 		    return _cairo_error (CAIRO_STATUS_NO_MEMORY);
+@@ -3476,13 +3476,13 @@ _cairo_ft_font_options_substitute (const
+ 	}
+     }
+ 
+-    if (options->antialias != CAIRO_ANTIALIAS_DEFAULT)
++    if (1 /*options->antialias != CAIRO_ANTIALIAS_DEFAULT*/)
+     {
+ 	if (FcPatternGet (pattern, FC_RGBA, 0, &v) == FcResultNoMatch)
+ 	{
+ 	    int rgba;
+ 
+-	    if (options->antialias == CAIRO_ANTIALIAS_SUBPIXEL) {
++	    if (options->antialias == CAIRO_ANTIALIAS_SUBPIXEL || options->antialias == CAIRO_ANTIALIAS_DEFAULT) {
+ 		switch (options->subpixel_order) {
+ 		case CAIRO_SUBPIXEL_ORDER_DEFAULT:
+ 		case CAIRO_SUBPIXEL_ORDER_RGB:
+@@ -3508,7 +3508,7 @@ _cairo_ft_font_options_substitute (const
+ 	}
+     }
+ 
+-    if (options->lcd_filter != CAIRO_LCD_FILTER_DEFAULT)
++    if (1 /*options->lcd_filter != CAIRO_LCD_FILTER_DEFAULT*/)
+     {
+ 	if (FcPatternGet (pattern, FC_LCD_FILTER, 0, &v) == FcResultNoMatch)
+ 	{
+@@ -3536,7 +3536,7 @@ _cairo_ft_font_options_substitute (const
+ 	}
+     }
+ 
+-    if (options->hint_style != CAIRO_HINT_STYLE_DEFAULT)
++    if (1 /*options->hint_style != CAIRO_HINT_STYLE_DEFAULT*/)
+     {
+ 	if (FcPatternGet (pattern, FC_HINTING, 0, &v) == FcResultNoMatch)
+ 	{
+diff -up cairo-1.17.6/src/cairo-gl-msaa-compositor.c.omv~ cairo-1.17.6/src/cairo-gl-msaa-compositor.c
