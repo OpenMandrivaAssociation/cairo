@@ -20,7 +20,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.17.6
-Release:	5
+Release:	6
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -34,6 +34,8 @@ Patch1:		0001-Set-default-LCD-filter-to-FreeType-s-default.patch
 Patch2:		cairo-1.17.6-meson-fixes.patch
 
 Patch3:		cairo-1.17.6-sane-font-defaults.patch
+# (tpg) https://gitlab.freedesktop.org/cairo/cairo/-/issues/551
+Patch4:		https://gitlab.freedesktop.org/cairo/cairo/-/commit/ff4fd6f960deb7afdac233465a1f4e807234ad15.patch
 
 BuildRequires:	meson
 %if %{with doc}
@@ -50,9 +52,6 @@ BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xrender)
 BuildRequires:	pkgconfig(libudev)
 BuildRequires:	pkgconfig(lzo2)
-BuildRequires:	pkgconfig(glesv2)
-BuildRequires:	pkgconfig(egl)
-BuildRequires:  pkgconfig(gl)
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-render)
 BuildRequires:  pkgconfig(xcb-shm)
@@ -200,10 +199,8 @@ Requires:	%{devname} = %{version}-%{release}
 Requires:	%{lib32name} = %{version}-%{release}
 Requires:	%{lib32gobject} = %{version}-%{release}
 Requires:	%{lib32script} = %{version}-%{release}
-Requires:	devel(libEGL)
 Requires:	devel(libfontconfig)
 Requires:	devel(libfreetype)
-Requires:	devel(libGL)
 Requires:	devel(libglib-2.0)
 Requires:	devel(libpng16)
 Requires:	devel(liblzo2)
@@ -228,6 +225,7 @@ Development files for Cairo library.
 	-Dzlib=enabled \
 	-Dsymbol-lookup=disabled \
 	-Dspectre=disabled \
+	-Dgl-backend=disabled \
 	-Dgtk_doc=false \
 	-Dtests=disabled \
 	-Dxml=disabled
@@ -239,7 +237,7 @@ Development files for Cairo library.
 	-Dfreetype=enabled \
 	-Dfontconfig=enabled \
 	-Dglib=enabled \
-	-Dgl-backend=gl \
+	-Dgl-backend=disabled \
 %if %{with doc}
 	-Dgtk_doc=true \
 %endif
