@@ -19,24 +19,18 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:	1.17.6
-Release:	6
+Version:	1.17.8
+Release:	1
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
 Source0:	http://cairographics.org/releases/%{name}-%{version}.tar.xz
 Patch0:		cairo-multilib.patch
 
-# https://gitlab.freedesktop.org/cairo/cairo/merge_requests/1
-Patch1:		0001-Set-default-LCD-filter-to-FreeType-s-default.patch
-
 # https://gitlab.freedesktop.org/cairo/cairo/-/issues/547
-Patch2:		cairo-1.17.6-meson-fixes.patch
-
 Patch3:		cairo-1.17.6-sane-font-defaults.patch
-# (tpg) https://gitlab.freedesktop.org/cairo/cairo/-/issues/551
-Patch4:		https://gitlab.freedesktop.org/cairo/cairo/-/commit/ff4fd6f960deb7afdac233465a1f4e807234ad15.patch
-
+# (tpg) https://gitlab.freedesktop.org/cairo/cairo/-/issues/634
+Patch100:	https://gitlab.freedesktop.org/cairo/cairo/-/merge_requests/442.patch
 BuildRequires:	meson
 %if %{with doc}
 BuildRequires:	gtk-doc
@@ -52,9 +46,9 @@ BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xrender)
 BuildRequires:	pkgconfig(libudev)
 BuildRequires:	pkgconfig(lzo2)
-BuildRequires:  pkgconfig(xcb)
-BuildRequires:  pkgconfig(xcb-render)
-BuildRequires:  pkgconfig(xcb-shm)
+BuildRequires:	pkgconfig(xcb)
+BuildRequires:	pkgconfig(xcb-render)
+BuildRequires:	pkgconfig(xcb-shm)
 %if %{with compat32}
 BuildRequires:	devel(libudev)
 BuildRequires:	devel(liblzo2)
@@ -225,7 +219,6 @@ Development files for Cairo library.
 	-Dzlib=enabled \
 	-Dsymbol-lookup=disabled \
 	-Dspectre=disabled \
-	-Dgl-backend=disabled \
 	-Dgtk_doc=false \
 	-Dtests=disabled \
 	-Dxml=disabled
@@ -237,7 +230,6 @@ Development files for Cairo library.
 	-Dfreetype=enabled \
 	-Dfontconfig=enabled \
 	-Dglib=enabled \
-	-Dgl-backend=disabled \
 %if %{with doc}
 	-Dgtk_doc=true \
 %endif
@@ -250,7 +242,6 @@ Development files for Cairo library.
 	-Dxml=disabled
 
 %meson_build
-
 
 %build
 %if %{with compat32}
@@ -269,7 +260,7 @@ Development files for Cairo library.
 %{_libdir}/libcairo-script-interpreter.so.%{major}*
 
 %files -n %{devname}
-%doc AUTHORS NEWS README
+%doc AUTHORS NEWS
 %{_bindir}/cairo-trace
 %{_bindir}/cairo-sphinx
 %{_libdir}/cairo/
