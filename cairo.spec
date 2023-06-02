@@ -5,6 +5,8 @@
 %bcond_with compat32
 %endif
 
+%global optflags %{optflags} -O3
+
 %define major 2
 %define libname %mklibname cairo %{major}
 %define libgobject %mklibname cairo-gobject %{major}
@@ -20,7 +22,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.17.8
-Release:	2
+Release:	3
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
