@@ -21,8 +21,8 @@
 
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
-Version:	1.17.8
-Release:	5
+Version:	1.18.0
+Release:	1
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -31,10 +31,6 @@ Patch0:		cairo-multilib.patch
 
 # https://gitlab.freedesktop.org/cairo/cairo/-/issues/547
 Patch3:		cairo-1.17.6-sane-font-defaults.patch
-# (tpg) upstream patches
-Patch100:	https://gitlab.freedesktop.org/cairo/cairo/-/merge_requests/442.patch
-Patch101:	https://gitlab.freedesktop.org/cairo/cairo/-/merge_requests/467.patch
-Patch102:	https://gitlab.freedesktop.org/cairo/cairo/-/merge_requests/476.patch
 BuildRequires:	meson
 %if %{with doc}
 BuildRequires:	gtk-doc
@@ -224,8 +220,7 @@ Development files for Cairo library.
 	-Dsymbol-lookup=disabled \
 	-Dspectre=disabled \
 	-Dgtk_doc=false \
-	-Dtests=disabled \
-	-Dxml=disabled
+	-Dtests=disabled
 
 %ninja_build -C build32
 %endif
@@ -242,8 +237,7 @@ Development files for Cairo library.
 	-Dtee=enabled \
 	-Dtests=disabled \
 	-Dxcb=enabled \
-	-Dxlib=enabled \
-	-Dxml=disabled
+	-Dxlib=enabled
 
 %meson_build
 
@@ -266,7 +260,6 @@ Development files for Cairo library.
 %files -n %{devname}
 %doc AUTHORS NEWS
 %{_bindir}/cairo-trace
-%{_bindir}/cairo-sphinx
 %{_libdir}/cairo/
 %{_libdir}/lib*.so
 %{_includedir}/*
