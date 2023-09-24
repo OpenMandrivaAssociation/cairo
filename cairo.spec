@@ -31,10 +31,6 @@ Patch0:		cairo-multilib.patch
 
 # https://gitlab.freedesktop.org/cairo/cairo/-/issues/547
 Patch3:		cairo-1.17.6-sane-font-defaults.patch
-# (tpg) upstream patches
-Patch100:	https://gitlab.freedesktop.org/cairo/cairo/-/merge_requests/442.patch
-Patch101:	https://gitlab.freedesktop.org/cairo/cairo/-/merge_requests/467.patch
-Patch102:	https://gitlab.freedesktop.org/cairo/cairo/-/merge_requests/476.patch
 BuildRequires:	meson
 %if %{with doc}
 BuildRequires:	gtk-doc
