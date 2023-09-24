@@ -220,8 +220,7 @@ Development files for Cairo library.
 	-Dsymbol-lookup=disabled \
 	-Dspectre=disabled \
 	-Dgtk_doc=false \
-	-Dtests=disabled \
-	-Dxml=disabled
+	-Dtests=disabled
 
 %ninja_build -C build32
 %endif
@@ -238,8 +237,7 @@ Development files for Cairo library.
 	-Dtee=enabled \
 	-Dtests=disabled \
 	-Dxcb=enabled \
-	-Dxlib=enabled \
-	-Dxml=disabled
+	-Dxlib=enabled
 
 %meson_build
 
