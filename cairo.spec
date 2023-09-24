@@ -260,7 +260,6 @@ Development files for Cairo library.
 %files -n %{devname}
 %doc AUTHORS NEWS
 %{_bindir}/cairo-trace
-%{_bindir}/cairo-sphinx
 %{_libdir}/cairo/
 %{_libdir}/lib*.so
 %{_includedir}/*
