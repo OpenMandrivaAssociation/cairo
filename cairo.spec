@@ -22,7 +22,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.18.0
-Release:	1
+Release:	2
 License:	BSD
 Group:		System/Libraries
 URL:		http://cairographics.org/
@@ -98,6 +98,10 @@ OpenGL are currently being planned.
 Summary:	Cairo - multi-platform 2D graphics library
 Group:		System/Libraries
 Requires:	%{libscript} = %{EVRD}
+# This is for compatibility with 3rd party binary packages, in particular
+# cuda-nvpp has a dependency on a package called "cairo" instead of the
+# libraries provided by it.
+Provides:	cairo = %{EVRD}
 
 %description -n %{libname}
 Cairo provides anti-aliased vector-based rendering for X. Paths
