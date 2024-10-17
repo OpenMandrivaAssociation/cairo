@@ -25,7 +25,7 @@ Version:	1.18.2
 Release:	2
 License:	BSD
 Group:		System/Libraries
-URL:		http://cairographics.org/
+URL:		https://cairographics.org/
 Source0:	http://cairographics.org/releases/%{name}-%{version}.tar.xz
 Patch0:		cairo-multilib.patch
 
