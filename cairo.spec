@@ -22,7 +22,7 @@
 Summary:	Cairo - multi-platform 2D graphics library
 Name:		cairo
 Version:	1.18.6
-Release:	1
+Release:	2
 License:	BSD
 Group:		System/Libraries
 URL:		https://cairographics.org/
@@ -50,6 +50,13 @@ BuildRequires:	pkgconfig(xcb)
 BuildRequires:	pkgconfig(xcb-render)
 BuildRequires:	pkgconfig(xcb-shm)
 %if %{with compat32}
+# clang 23 -m32 links compiler-rt, not libgcc.a. The i386 builtins live
+# in the cross-i686 clang package, with matching libc/gcc/binutils sysroot.
+BuildRequires:	libc6
+BuildRequires:	cross-i686-openmandriva-linux-gnu-clang
+BuildRequires:	cross-i686-openmandriva-linux-gnu-libc
+BuildRequires:	cross-i686-openmandriva-linux-gnu-binutils
+BuildRequires:	cross-i686-openmandriva-linux-gnu-gcc
 BuildRequires:	devel(libudev)
 BuildRequires:	devel(liblzo2)
 BuildRequires:	devel(libXrender)
